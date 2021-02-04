@@ -1,0 +1,12 @@
+{
+	"__default__":
+	{	
+		"queue" : "highp",
+		"memory" : "4G",
+		"name" : "{rule}",
+		"output" : "../jobs/{rule}.{wildcards.train_ct}.default.out",
+		"error" : "../jobs/{rule}.{wildcards.train_ct}.default.out",
+		"mail" : "abe",
+		"time" : "23:59:59"
+	}
+}

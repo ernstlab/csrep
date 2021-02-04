@@ -1,0 +1,16 @@
+list_fn: ../../diff_pete/roadmap/short_ESC.list
+list2: ../../diff_pete/roadmap/Brain.list
+num_null_samples: 30
+out_dir: ../../diff_pete/roadmap/snake_ESC_Brain_nulls
+jobs_dir: ../jobs
+train_mode: multi_logistic
+training_data_folder: ../../diff_pete/roadmap/training_data
+all_ct_segment_folder: ../../diff_pete/roadmap/all_ct_segments
+chromhmm_state_num: 18
+cross_validation_segment_code: ./segment_based/run_cross_validation_pipeline_segment_based.py
+gene_region_fn: /u/project/ernst/havu73/diff_pete/roadmap/gene_region_list
+train_multi_logistic_code: ./segment_based/train_multinomial_logistic_regression.py
+average_pred_results_code: ./scripts/average_pred_results.py
+calculate_rep_matrix_code: ./get_representative_segmentation_cell_group.py
+state18_annot_fn: /u/project/ernst/havu73/data/roadmap_epigenome/18_core_K27ac_model_downloaded/state_annotation.txt
+num_score_bins_roc: 100

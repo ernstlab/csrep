@@ -1,0 +1,12 @@
+{
+	"__default__":
+	{	
+		"queue" : "highp",
+		"memory" : "12G",
+		"name" : "{rule}",
+		"output" : "../jobs/{rule}.{wildcards.sample}.default.out",
+		"error" : "../jobs/{rule}.{wildcards.sample}.default.err",
+		"mail" : "abe",
+		"time" : "23:59:59"
+	}
+}
