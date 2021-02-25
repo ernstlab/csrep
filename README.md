@@ -1,4 +1,4 @@
-Hello! Wecome to CSREP. Our manuscript was submitted to ISMB 2021. We plan to make the manuscript available on BioRXiv shortly.
+Hello! Wecome to CSREP- a method that probabilisitcally estimate the chromatin state annotation for a group of related samples. A direct application of CSREP is to calculate the differential chromatin state mappings between two groups with multiple patterns. Our manuscript will be made public shortly. 
 # Data Availability
 ## Male-Female comparision
 The data of histogram for differential scores for Male-minus-Female is available at https://public.hoffman2.idre.ucla.edu/ernst/2K9RS/Male_minus_Female/multi_logistic/histogram/ 
