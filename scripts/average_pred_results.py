@@ -8,7 +8,7 @@ import helper
 import pandas as pd
 import glob
 import numpy as np
-
+import multiprocessing as mp
 def get_genomic_positions_list(all_ct_segment_folder, outDir, replace_existing_file):
 	gen_pos_segment_fn_list = glob.glob(all_ct_segment_folder + '/chr*')
 	gen_pos_list = [(x.split('/')[-1]).split('_combined_segment.bed.gz')[0] for x in gen_pos_segment_fn_list] # get the list of all genomic positions available: [chr9_11, chr9_12, etc.]

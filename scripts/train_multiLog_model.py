@@ -5,12 +5,7 @@ import os
 import sys
 import time
 import glob
-sys.path.append("/u/home/h/havu73/project-ernst/source_pete/train_and_evaluate/")
 import helper
-import multiprocessing as mp
-TRAIN_MODE_LIST = ['baseline', 'multi_logistic', 'ml_chromHMM_pos']
-import time
-start_time = time.time()
 def get_X_colnames (train_cell_types, num_chromHMM_state):
 	'''
 	train_cell_types = ['E034', 'E037']
@@ -75,15 +70,6 @@ def train_multinomial_logistic_regression(X_df, Y_df, num_chromHMM_state):
 	regression_machine = LogisticRegression(random_state = 0, solver = 'lbfgs', multi_class = 'multinomial', max_iter = 10000).fit(X_df, Y_df)
 	return regression_machine 
 
-
-
-def predict_regression_segmentation(predictor_df, regression_machine, num_chromHMM_state):
-	response_df = regression_machine.predict_proba(predictor_df) # --> 2D: rows: positions (observations), columns: states (types) --> probability that each obs is of each type
-	response_df = pd.DataFrame(response_df) # convert to a dataframe 
-	# 3. Turn the results into readable format, then write to file. 
-	response_df.columns = list(map(lambda x: "state_" + str(x + 1), range(num_chromHMM_state)))
-	return response_df
-
 def predict_segmentation_one_genomic_window(segment_fn, output_fn, train_cell_types, response_ct, num_chromHMM_state, regression_machine):
 	# based on the machine created through training, predict the segmentation corresponding to one specific window on the genome, specified in segment_fn. And print out, for each position, and for each chromHMM state, the probability that the region fall in to the state.
 	# 1. Get the data of predictor cell types into the right format
@@ -91,6 +77,12 @@ def predict_segmentation_one_genomic_window(segment_fn, output_fn, train_cell_ty
 	# 2. Do the prediction job. Different model has different prediction functions
 	response_df = regression_machine.predict_proba(predictor_df) # --> 2D: rows: positions (observations), columns: states (types) --> probability that each obs is of each type
 	response_df = pd.DataFrame(response_df) # convert to a dataframe 
+	response_df.columns = regression_machine.classes_
+	# soemtimes, due to the the training data not having observations of certain classes (states), therefore, we do not see that state included in the regression machine. Therefore, we assign the probabilities of missing states from the model to be 0. Usually, this is not an issue when we train using 10% of the genome.
+	missing_states = np.setdiff1d(np.arange(1, num_chromHMM_state+1, 1), regression_machine.classes_) # missing states (not in the model)
+	for state in missing_states:
+		response_df[state] = 0 # fill up missing states with probabilities 0
+	response_df = response_df[np.arange(1, num_chromHMM_state + 1, 1)] # rearrange the columns from 1 --> num_chromHMM_state
 	# 3. Turn the results into readable format, then write to file. 
 	response_df.columns = list(map(lambda x: "state_" + str(x + 1), range(num_chromHMM_state)))
 	response_df.to_csv(output_fn, header = True, index = False, compression = 'gzip', sep = '\t')	
@@ -171,15 +163,12 @@ def main():
 	print ("Done getting one hot data")
 	print (Xtrain_segment_df.head())
 	print ()
-	#print (Y_df.head())
 	# 2. Get the regression machine
 	regression_machine = train_multinomial_logistic_regression(Xtrain_segment_df, Y_df, num_chromHMM_state)
 	print ("Done training")
 	# 3. Based on the machine just created, process training data and then predict the segmentation at each position for the response_ct
 	predict_segmentation (all_ct_segment_folder, regression_machine, predict_outDir, train_cell_types, response_ct, num_chromHMM_state)
 	print ("Done predicting whole genome")
-	run_time = time.clock() - start_time
-	print ("Done after : " + str(run_time))
 	
 def usage():
 	print ("train_multinomial_logistic_regression.py ")

@@ -1,1 +1,0 @@
-snakemake -j 100 --cluster "qsub -V -pe shared 4 -l h_rt=24:00:00,h_data=16G -o /u/home/z/zanekoch/project-ernst/source_pete/create_null_hypothesis_samples -e /u/home/z/zanekoch/project-ernst/source_pete/create_null_hypothesis_samples"

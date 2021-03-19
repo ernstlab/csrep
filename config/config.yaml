@@ -1,0 +1,11 @@
+is_calculate_diff_two_groups: 1 # 0: no calculation of differential groups, 1: yes, calcualte the differential chromatin state assignment scores between
+all_cg_out_dir: testdata/csrep_output
+raw_user_input_dir: 'testdata/raw_data'
+all_ct_segment_folder: 'testdata/all_ct_segments'
+raw_segment_suffix: '_chr22_core_K27ac_segments.bed.gz'
+training_data_folder: testdata/training_data
+chrom_length_fn: 'testdata/roadmap_18state_chromlength.bed'
+sample_genome_fn: 'testdata/sample_genome.bed.gz'
+chromhmm_state_num: 18
+train_mode_list: ['multi_logistic', 'baseline'] 
+cell_group_list: ['ESC', 'Brain']
