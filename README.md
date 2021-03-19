@@ -4,8 +4,14 @@ Hello! Wecome to CSREP- a method that probabilisitcally estimate the chromatin s
 In order for CSREP to work, we need:
 - bedtools (https://bedtools.readthedocs.io/en/latest/content/installation.html)
 We create an environment that is compatible with our program, which you install as a conda environment: ```conda env create -f env/csrep_env.yml```
+
 ## Test data
-To show you how CSREP can be run, we provided an example that include 18-chromatin-state segmentation data for 5 samples of ESC groups and 7 samples of Brain group from Roadmap Epigenomics Project (https://egg2.wustl.edu/roadmap/web_portal/chr_state_learning.html#exp_18state). We restricted the example input to include only data from chromosome 22. 
+To show you how CSREP can be run, we provided an example that include 18-chromatin-state segmentation data for 5 samples of ESC groups and 7 samples of Brain group from Roadmap Epigenomics Project (https://egg2.wustl.edu/roadmap/web_portal/chr_state_learning.html#exp_18state). We restricted the example input to include only data from chromosome 22.
+ 
+## How to install CSREP
+- Clone this github repository
+- Replicate our conda environment: ```conda env create -f env/csrep_env.yml``` (Note: path to this file is relative to the current directory that contains this README file)
+- Install bedtools. 
 
 # Run CSREP 
 ## Snakemake 
@@ -48,8 +54,3 @@ The data of genome-wide CSREP score for all cell groups in ROADMAP is available 
 The 11 cell groups's subfolders include: blood Blood_other Digestive Brain ESC ES-deriv Heart iPSC Muscle Skin Sm_Muscle. To access the csrep score for a group, enter `<cell_group_name>`/`csrep`
 ## Other data
 For any other data related to the paper, please email Prof. Jason Ernst or grad student Ha Vu. 
-# Code availability
-## Calculate CSREP scores for summarizing a group of samples
-This code is currently inside the rep_chrom_pipeline. We are still trying to figure out how to make the program most user-friendly. Please give us bits of time. 
-## Calculate differential CSREP scores for two groups of samples
-Same as previous section
