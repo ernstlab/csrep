@@ -46,6 +46,8 @@ Right now, we create CSREP such that you can simply modify the ```config/config.
 - ```train_mode_list```: the list of training mode that you would like results for. ```multi_logistic``` for CSREP and ```baseline``` for base_count, as presented in the paper. 
 - ```cell_group_list```: the list of group names of groups of samples in that we would like to calculate the representative/differential chromatin state maps for. If ```is_calculate_diff_two_groups``` is set to 1 (meaning you want to calculate differential chromatin scores), then ```cell_group_list``` should specify two group names, otherwise the program may crash
 
+# Tutorial
+Please see this (link)[https://github.com/ernstlab/csrep/blob/master/tutorial.md]
 # Data Availability
 ## Male-Female comparision
 The data of histogram for differential scores for Male-minus-Female is available at https://public.hoffman2.idre.ucla.edu/ernst/2K9RS/Male_minus_Female/multi_logistic/histogram/ 
