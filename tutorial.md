@@ -10,13 +10,9 @@ The following text shows you the file structure in which CSREP organizes input a
 ```testdata/csrep_output``` corresponding to ```<all_cg_out_dir>```:  The output folder where the output data (representative/differenntial chromatin state maps) for all groups of samples are stored. All data inside this folder will be produced as part of the CSREP pipeline, except for ```sample.list``` files which users will have to prepare. 
 
 \|\_\_ ```Brain```: the folder where we can get summary chromatin state map data for samples in ```Brain``` group. The structure of this folder is similar to that of ```ESC``` folder as shown belows.
-
 \|\_\_ ```ESC```: the folder where we can get summary chromatin state map data for samples in ```ESC``` group. 
-
 \|\_\_\|\_\_ ```sample.list```: file storing all the sampleIDs in the ```ESC``` group. Each sampleID is on a separate line (```E003, E008, E014, etc.```). **This is a file where the users have to create and place them within this folder in order for Snakemake to work.**
-
 \|\_\_\|\_\_ ```multi_logistic```: where output from CSREP's summary chromatin state maps are stored
-
 \|\_\_\|\_\_\|\_\_ ```representative_data```
 
 \|\_\_\|\_\_\|\_\_\|\_\_ ```average_predictions```: folder containing the representative chromatin state maps for the group. This is the main output that you are interested in for summarzing at group of samples' chromatin state maps. Each file in this folder has the format ```chr<chrom>_<region_index, 0-based>_avg_pred.txt.gz```, each region corresonds to at most 10M bp on the within the chromosome. Each line in the file corresponds to one window of the chromatin state map (typically 200bp, therefore, a file containing data for 10Mbp window will have 50K lines, each showing the chroamtin state map for a 200bp region). File ```chr22_0_avg_pred.txt.gz``` shows results in the first 10Mbp window of chromosome 22. File ```chr22_5_avg_pred.txt.gz``` shows results in the last 1304400 bp in the chromosome, since chr22 has length 51304400 bp. The first line of each file shows headers (chromatin states), the first column shows the row index within file, 0-based. 
