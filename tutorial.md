@@ -5,7 +5,21 @@ We provided some test data for ease of following this tutorial (in folder ./test
 
 The following text shows you the file structure in which CSREP organizes input and output file. We write them in the terms of the variable names in the config file ```config/config.yml```. You can look at this file structure for reference, which will be helpful when you fill in parameters for CSREP in the config file
 
-```testdata/raw_data``` corresponding to ```raw_user_input_dir```: the folder where all input segmentation data files of all samples, regardless of their group memberships, are stored. In the example, this folder stores 12 files from Brain and ESC groups in the format ```<sampleID>_chr22_core_K27ac_segments.bed.gz```, so ```input_filename_suffix``` will then be ```_chr22_core_K27ac_segments.bed.gz```. **Users will prepare data in this folder**
+```testdata/raw_data``` corresponding to ```raw_user_input_dir```: the folder where all input segmentation data files of all samples, regardless of their group memberships, are stored. Inside this folder: 
+\|\_\_```<sample_id>```: each of these folders correspond to a sample. In the example, there are 12 of these folders. Inside each folder: 
+\|\_\_\|\_\_```<sampleID><input_filename_suffix>```: This file corresponds to one biosample's input segmentation input. In the example provided with the tutorial, each of these files are in the format ```<sampleID>_chr22_core_K27ac_segments.bed.gz```, so ```input_filename_suffix``` will then be ```_chr22_core_K27ac_segments.bed.gz```. **Users will prepare data in this folder. The format of this file requires, at the minimum, the first 4 columns to be of the form:**
+```
+<chrom>	<start_bp>	<end_bp>	<state>
+```
+And example of the file format is as follows:
+```
+chr10   0       94400   E18
+chr10   94400   112000  E13
+chr10   112000  117200  E18
+``` 
+**Note about state format**: The states are usually of the form ```E<state_index>``` (where ```<state_index>``` is one-based), which is the default format if the segmentation is being done by ChromHMM. You can also have your states being of the form ```<one_character><state_index>```, examples for state ```1```: ```E1, U1, S1```, etc. Or, sometimes your states may be the full state names or the state mnenomic (ex: ```TSSA, Quies, EnhA```, etc.) --> if this is the case, your ```state_annot_fn``` should have at least two columns: ```state``` and ```mnenomic``` to specify the meaning of states and their indices. The state format is important because CSREP will try to convert the state names/annotations in the input into a state_number system. If this step is wrong, it may corrupt the entire CSREP pipeline. Details of the ```state_annot_fn``` file are provided below. 
+
+```testdata/state_annot.txt``` corresponding to ```state_annot_fn```. This file specifies different chracteristics of the states. **Users will prepare data in this File. The format of this file requires, at the minimum, columns ```state``` and ```mnenomic```**. Column ```state``` should show the states' indices (one-based), column ```mnenomic``` should show the state names (Many repositories such as [Epimap](http://compbio.mit.edu/epimap/) provides raw data of state names in the mnenomic forms such as ```TSSA, Quies, EnhA```, etc.). We provide an example state annotation file ```testdata/state_annot.txt``` for your reference.
 
 ```testdata/csrep_output``` corresponding to ```<all_cg_out_dir>```:  The output folder where the output data (representative/differenntial chromatin state maps) for all groups of samples are stored. All data inside this folder will be produced as part of the CSREP pipeline, except for ```sample.list``` files which users will have to prepare. 
 
