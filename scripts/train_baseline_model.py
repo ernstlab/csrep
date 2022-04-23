@@ -1,11 +1,9 @@
 import pandas as pd
 import numpy as np
-from sklearn.linear_model import LogisticRegression
 import os
 import sys
 import time
 import glob
-sys.path.append("/u/project/ernst/havu73/source_pete/train_and_evaluate/")
 import helper
 import multiprocessing as mp
 
@@ -100,7 +98,7 @@ def predict_segmentation (all_ct_segment_folder, predict_outDir, train_cell_type
         genome_pos_list = [(x.split('/')[-1]).split('_combined_segment.bed.gz')[0] for x in segment_fn_list] # from /path/to/chr9_14_combined_segment.bed.gz --> chr9_14
         output_fn_list = [os.path.join(predict_outDir, x + "_avg_pred.txt.gz") for x in genome_pos_list]# get the output file names corresponding to different regions on the genome
 # 2. partition the list of file names into groups, for later putting into jobs for multiple processes
-        num_cores = 4
+        num_cores = 1
         partition_segment_fn_list = partition_file_list(segment_fn_list, num_cores)
         partition_output_fn_list = partition_file_list(output_fn_list, num_cores)
         processes = [mp.Process(target = one_job_run_predict_segmentation, args = (partition_segment_fn_list[i], partition_output_fn_list[i], train_cell_types, num_chromHMM_state, train_mode)) for i in range(num_cores)]

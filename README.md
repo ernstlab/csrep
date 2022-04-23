@@ -1,4 +1,34 @@
 Hello! Wecome to CSREP- a method that probabilisitcally estimate the chromatin state annotation for a group of related samples. A direct application of CSREP is to calculate the differential chromatin state mappings between two groups with multiple patterns. Our manuscript will be made public shortly. 
+# Data Availability
+## CSREP scores for cell groups from ROADMAP
+The data of summary chromatin state maps outputted by CSREP for all cell groups in ROADMAP and Epimap is available at https://public.hoffman2.idre.ucla.edu/ernst/2K9RS/csrep/
+Below is the file structure of this download folder
+```
+|__ roadmap
+|__|__ <cell_group>
+|__|__|__ hg19
+|__|__|__|__ summary_state_track.bed.gz: This file shows the summary chromatin state map for the group. The file is designed such that it had a header that can be read into UCSC genome browser
+|__|__|__|__ state_assign_matrix: inside this folder, you will see the data of probabilistic estimates of state assignments for each genomic position in the genome. There are 316 files, each  corresponding to a window of 10Mb (or less, if the file belongs to the end of a chromosome). A file chr1_0_avg_pred.txt.gz represents region chr1: 0: 9,999,999 bp. File chr5_15_avg_pred.txt.gz represents region chr5: 150Mp- 150Mb+9,999,999bp. Each line in the file represents a 200-bp window in the genome. If it's too confusing, just have a look at the file and you will figure out. 
+|__|__|__ hg38
+|__|__|__|__ summary_state_track.bed.gz: This file is lifted-over from the corresponding output in hg19
+|__|__|__|__ state_assign_matrix: inside this folder, you will see 23 files corresponding to 23 chromosomes (1-22,X, we do not calculate output for chrY). Data here is actually lifted over from the CSREP's output in hg19. Implementations and details about how we get CSREP output by lifting over the output from another assembly can be found at <hahahaha fill in>  
+|__ epimap
+|__|__ <cell_group>
+|__|__|__ hg19
+|__|__|__|__ summary_state_track.bed.gz: Same structure as in Roadmap (mentioned above)
+|__|__|__|__ state_assign_matrix: Same structure as in Roadmap (mentioned above)
+|__|__|__ hg38: Unlike in Roadmap (which lifted over CSREP output data from hg19), here, we calculated CSREP output from the raw data downloaded from Epimap portal
+|__|__|__|__ summary_state_track.bed.gz: Same structure as in Roadmap (mentioned above)
+|__|__|__|__ state_assign_matrix: Same structure as in Roadmap (mentioned above)
+
+```
+
+## Other data
+For any other data related to the paper, please email Prof. Jason Ernst or grad student Ha Vu. 
+
+# Note from the authors:
+If you run into any problems running CSREP or following the tutorial accompanying the software, please contact grad student Ha Vu via email havu73@ucla.edu. We will be happy to assist and hear your feedback to make the software more fool-proof and user-friendly. 
+
 # Installing CSREP
 ## Software requirement
 In order for CSREP to work, we need:
@@ -48,11 +78,12 @@ Right now, we create CSREP such that you can simply modify the ```config/config.
 
 # Tutorial
 Please see this (link)[https://github.com/ernstlab/csrep/blob/master/tutorial.md]
-# Data Availability
-## Male-Female comparision
-The data of histogram for differential scores for Male-minus-Female is available at https://public.hoffman2.idre.ucla.edu/ernst/2K9RS/Male_minus_Female/multi_logistic/histogram/ 
-## CSREP scores for cell groups from ROADMAP
-The data of genome-wide CSREP score for all cell groups in ROADMAP is available at https://public.hoffman2.idre.ucla.edu/ernst/2K9RS/
-The 11 cell groups's subfolders include: blood Blood_other Digestive Brain ESC ES-deriv Heart iPSC Muscle Skin Sm_Muscle. To access the csrep score for a group, enter `<cell_group_name>`/`csrep`
-## Other data
-For any other data related to the paper, please email Prof. Jason Ernst or grad student Ha Vu. 
+
+# License
+All code is provided under the MIT Open Acess License Copyright 2021 Ha Vu and Jason Ernst
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

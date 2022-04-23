@@ -85,6 +85,7 @@ def predict_segmentation_one_genomic_window(segment_fn, output_fn, train_cell_ty
 	response_df = response_df[np.arange(1, num_chromHMM_state + 1, 1)] # rearrange the columns from 1 --> num_chromHMM_state
 	# 3. Turn the results into readable format, then write to file. 
 	response_df.columns = list(map(lambda x: "state_" + str(x + 1), range(num_chromHMM_state)))
+	print(output_fn)
 	response_df.to_csv(output_fn, header = True, index = False, compression = 'gzip', sep = '\t')	
 	print ("Done producing file: " + output_fn)
 
@@ -110,11 +111,26 @@ def partition_file_list(file_list, num_cores):
 		results.append(this_core_files)
 	return results
 
-def predict_segmentation (all_ct_segment_folder, regression_machine, predict_outDir, train_cell_types, response_ct, num_chromHMM_state):
+def find_uncalculated_gene_regions(predict_outDir, all_ct_segment_folder, replace_existing_files):
+	"""
+	predict_outDir: the output folder where output files <gene_region>_pred_out.txt.gz are stored
+	all_ct_segment_folder: the folder of input data files for the training. 
+	output: a list of genomic regions that were in the input folder, but missing in the output folder --> uncalculated regions of the genome
+	"""
+	calculated_fn_list = glob.glob(predict_outDir + '/*_pred_out.txt.gz')
+	calculated_region_list = list(map(lambda x: x.split('/')[-1].split('_pred_out.txt.gz')[0], calculated_fn_list)) # chr<chrom>_<region_index>
+	all_input_fn_list = glob.glob(all_ct_segment_folder + '/*_combined_segment.bed.gz')
+	all_region_list = list(map(lambda x: x.split('/')[-1].split('_combined_segment.bed.gz')[0], all_input_fn_list))
+	if replace_existing_files == 1: # the user wants to replace existing files in the output_folder, we willl return all the regions. If not, we return only regions whose output files are missing and hence need to be recalcualted
+		return all_region_list
+	not_calculated_region_list = list(np.setdiff1d(all_region_list, calculated_region_list))
+	return not_calculated_region_list
+
+def predict_segmentation (all_ct_segment_folder, regression_machine, predict_outDir, train_cell_types, response_ct, num_chromHMM_state, replace_existing_files):
 	# 1. Get list of segmentation files corresponding to different windows on the genome.
-	segment_fn_list = glob.glob(all_ct_segment_folder + "/*.bed.gz")
-	genome_pos_list = list(map(lambda x: (x.split('/')[-1]).split('_combined_segment.bed.gz')[0],  segment_fn_list)) # from /path/to/chr9_14_combined_segment.bed.gz --> chr9_14
-	output_fn_list = list(map(lambda x: os.path.join(predict_outDir, x + "_pred_out.txt.gz"), genome_pos_list)) # get the output file names corresponding to different regions on the genome
+	uncalculated_region_list = find_uncalculated_gene_regions(predict_outDir, all_ct_segment_folder, replace_existing_files)
+	segment_fn_list = list(map(lambda x: os.path.join(all_ct_segment_folder, x + '_combined_segment.bed.gz'), uncalculated_region_list))
+	output_fn_list = list(map(lambda x: os.path.join(predict_outDir, x + "_pred_out.txt.gz"), uncalculated_region_list)) # get the output file names corresponding to different regions on the genome
 	# 2. partition the list of file names into groups, for later putting into jobs for multiple processes
 	one_job_run_predict_segmentation(segment_fn_list, output_fn_list, train_cell_types, response_ct, num_chromHMM_state, regression_machine)
 	# num_cores = 4
@@ -137,7 +153,7 @@ def get_train_cell_types(all_ct_fn, response_ct):
 	return ct_list
 
 def main():
-	num_mandatory_args = 7
+	num_mandatory_args = 8
 	if len(sys.argv)!= num_mandatory_args: 
 		usage()
 	train_data_folder = sys.argv[1]
@@ -155,6 +171,8 @@ def main():
 		usage()
 	all_ct_fn = sys.argv[6]
 	helper.check_file_exist(all_ct_fn)
+	replace_existing_files = helper.get_command_line_integer(sys.argv[7])
+	assert replace_existing_files in [0,1], 'replace_existing_files should be 0 (no, only create result files for those that have not been outputted) or 1 (yes, rewrite everything)'
 	# get the list of train_cell_types as our training features
 	train_cell_types = get_train_cell_types(all_ct_fn, response_ct)
 	print ("Done getting command line arguments")
@@ -167,7 +185,7 @@ def main():
 	regression_machine = train_multinomial_logistic_regression(Xtrain_segment_df, Y_df, num_chromHMM_state)
 	print ("Done training")
 	# 3. Based on the machine just created, process training data and then predict the segmentation at each position for the response_ct
-	predict_segmentation (all_ct_segment_folder, regression_machine, predict_outDir, train_cell_types, response_ct, num_chromHMM_state)
+	predict_segmentation (all_ct_segment_folder, regression_machine, predict_outDir, train_cell_types, response_ct, num_chromHMM_state,  replace_existing_files)
 	print ("Done predicting whole genome")
 	
 def usage():
@@ -178,6 +196,7 @@ def usage():
 	print ("response_ct: the cell type that we are trying to predict from the training dataset. This data is the Y value in our model training")
 	print ("num_chromHMM_state: Number of chromHMM states that are shared across different cell types")
 	print ("all_ct_fn: number of cell types that we will train")
+	print ("replace_existing_files: whether or not we would want to replace_existing_ output files 0 (no, only create result files for those that have not been outputted) or 1 (yes, rewrite everything)")
 	exit(1)
 
 main()

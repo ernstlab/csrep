@@ -15,27 +15,33 @@ def get_genomic_positions_list(all_ct_segment_folder, outDir, replace_existing_f
 	if replace_existing_file == 1:
 		return gen_pos_list
 	else: # repace_existing_file is 0
-		existing_fn_list = glob.glob(outDir + '*_avg_pred.txt.gz')
+		existing_fn_list = glob.glob(outDir + '/*_avg_pred.txt.gz')
 		existing_gen_pos_list = list(map(lambda x: (x.split('/')[-1]).split('_avg_pred.txt.gz')[0], existing_fn_list))
 		gen_pos_list = np.setdiff1d(gen_pos_list, existing_gen_pos_list)
-		print("These positions will be calculated in average_pred_results")
+		print("Number of positions that will be calculated in average_pred_results: " + str(len(gen_pos_list)))
 		print(gen_pos_list)
 		return gen_pos_list
 
 def put_one_result_file_to_df(fn):
-	return pd.read_csv(fn, header = 0, sep = '\t')
+	try:
+		df = pd.read_csv(fn, header = 0, sep = '\t')
+	except:
+		print("File {} is either empty or does not exist.".format(fn))
+		exit(1)
+	return df
 
 def average_multiple_result_files(result_fn_list, output_fn):
 	for fn in result_fn_list:
 		if not os.path.isfile(fn):
 			print('File: ' + fn + ' DOES NOT EXIST. The average of this region was not calculated')
 			return
-	result_df_list = list(map(put_one_result_file_to_df, result_fn_list[:2])) # read all the files data and put them into  a data frame
+	result_df_list = list(map(put_one_result_file_to_df, result_fn_list)) # read all the files data and put them into  a data frame
 	avg_df = pd.concat(result_df_list).groupby(level = 0).mean() # get the average across all the df. So what we get is a df : rows: genomic positions, columns: states, each entry is the average of the respective cells in all the input dfa
+	# avg_df.to_csv(output_fn, compression = 'gzip', header = True, index = True, sep = '\t') # save and compression to file
 	# now we normalize the resulting average probabilities, such that the row sum is always 0 (i,e, the probabilities of state assignments sum up to 1 over all states in a position)
 	row_sum = avg_df.sum(axis = 1) # row sum, so that we can divide each entry in a row by the row sum corresponding to that row
-	avg_df = avg_df.div(row_sum, axis = 0)
-	avg_df.to_csv(output_fn, compression = 'gzip', header = True, index = False, sep = '\t') # save and compression to file
+	row_norm_avg_df = avg_df.div(row_sum, axis = 0)
+	row_norm_avg_df.to_csv(output_fn, compression = 'gzip', header = True, index = False, sep = '\t') # save and compression to file
 	return
 
 def partition_file_list(file_list, num_cores):
