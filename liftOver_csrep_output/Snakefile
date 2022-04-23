@@ -1,23 +1,22 @@
-org_assembly = 'hg19'
-end_assembly = 'Hg38'
-chrom_length_fn = '/u/home/h/havu73/project-ernst/data/roadmap_epigenome/18_core_K27ac_model_downloaded/segmentation/hg19/chrom_length_sorted.bed'
-org_segment_dir = '/u/home/h/havu73/project-ernst/data/roadmap_epigenome/18_core_K27ac_model_downloaded/segmentation/'
-org_segment_fn = os.path.join(org_segment_dir, 'hg19_oneLine_perBin.bed.gz') # this file will aready be sorted and put into one bin per line by the rule create_bedFile_one_bin_per_row
-liftOver_dir = './liftOver'
-end_segment_dir = '/u/home/h/havu73/project-ernst/data/roadmap_epigenome/18_core_K27ac_model_downloaded/segmentation/'
+configfile: "./config/config.yaml"
+org_assembly = config['org_assembly']
+end_assembly = config['end_assembly']
+chrom_length_fn = config['chrom_length_fn']
+org_segment_fn = config['org_segment_fn'] # this file will aready be sorted and put into one bin per line by the rule create_bedFile_one_bin_per_row
+liftOver_dir = config['liftOver_dir']
+end_segment_dir = config['end_segment_dir']
 end_segment_raw = os.path.join(end_segment_dir, end_assembly + '_oneLine_perBin.bed.gz')
 unmapped_fn = os.path.join(end_segment_dir, 'unmapped_' + org_assembly + '_to_' + end_assembly + '.gz')
 destOrg_fn =   os.path.join(end_segment_dir, end_assembly + '_oneLine_perBin_from' + org_assembly + '.bed.gz')
 orgDest_fn = os.path.join(end_segment_dir, org_assembly + '_oneLine_perBin_to' + end_assembly + '.bed.gz')
-CHROMOSOME_LIST = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X']
-code_folder = '/u/home/h/havu73/project-ernst/source/chromHMM_utilities_unpublished/liftOver'
-
-org_all_ct_folder = '/u/home/h/havu73/project-ernst/diff_pete/roadmap/'
-dest_all_ct_folder = '/u/home/h/havu73/project-ernst/diff_pete/roadmap/hg38/'
-cg_list = ['Digestive', 'Blood_other', 'Heart', 'blood', 'Brain', 'ESC', 'ES-deriv', 'iPSC', 'Muscle', 'Skin', 'Sm_Muscle'] 
-train_mode_list = ['multi_logistic']
-gene_reg_list = ['chr1_24', 'chrX_15']
-num_chromHMM_state = 18 
+CHROMOSOME_LIST = config['CHROMOSOME_LIST']
+code_folder = config['code_folder']
+org_all_ct_folder = config['org_all_ct_folder']
+dest_all_ct_folder = config['dest_all_ct_folder']
+cg_list = config['cg_list']
+train_mode_list = config['train_mode_list']
+gene_reg_list = config['gene_reg_list']
+num_chromHMM_state = config['num_chromHMM_state'] 
 
 rule all:
 	input:
