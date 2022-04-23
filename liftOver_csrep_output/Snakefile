@@ -10,7 +10,6 @@ unmapped_fn = os.path.join(end_segment_dir, 'unmapped_' + org_assembly + '_to_' 
 destOrg_fn =   os.path.join(end_segment_dir, end_assembly + '_oneLine_perBin_from' + org_assembly + '.bed.gz')
 orgDest_fn = os.path.join(end_segment_dir, org_assembly + '_oneLine_perBin_to' + end_assembly + '.bed.gz')
 CHROMOSOME_LIST = config['CHROMOSOME_LIST']
-code_folder = config['code_folder']
 org_all_ct_folder = config['org_all_ct_folder']
 dest_all_ct_folder = config['dest_all_ct_folder']
 cg_list = config['cg_list']
@@ -71,7 +70,7 @@ rule rid_overlapping_from_raw:  # given one chrom's end_raw data, we would like 
 		temp(os.path.join('temp_remove_indices_chr_{chrom}')) 
 	shell:	
 		"""
-		python {code_folder}/find_overlapping_segments_from_liftOver_one_chrom.py {input} {output}
+		python find_overlapping_segments_from_liftOver_one_chrom.py {input} {output}
 		"""
 
 rule combine_end_segment:

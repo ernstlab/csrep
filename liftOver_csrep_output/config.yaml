@@ -2,14 +2,13 @@ org_assembly: 'hg19' # this has to match the map assembly file downloaded from u
 end_assembly: 'Hg38' # this has to match the map assembly file downloaded from ucsc. In our case, that file is in ./liftOver/hg19ToHg38.over.chain.gz (Note: case sensitive)
 chrom_length_fn: '../testdata/chrom_length_sorted.bed'
 org_segment_fn: '../testdata/hg19_oneLine_perBin.bed.gz' 
-# dear user, please fill out the org_segment_fn. We provide the path to a file that is formatted strictly for chr22, for demo purpuse
+# dear user, this file will be produced by the pipeline, we currently fill out this file inside the folder testdata. You are welcome to change it to where works for you. If you are confused, don't do anything until you know what to do (aka, keep what we filled)
 # this file is very simply a bed file with 4 columns: chrom, start, end, chrom_start_end. Each line corresponds to a 200bp bin in the genome. This file is a way that we figured out a workaround to get a 1-1 mapping of 200bp bins from hg19 to hg38. The 1-1 mapping means that each 200bp bin in hg19 is mapped to only one bin in hg38. If there are multiple bins in hg19 mapped to hg38, the pipeline will later get rid of those bins
 # this file will aready be sorted and put into one bin per line by the rule create_bedFile_one_bin_per_row
 liftOver_dir: './liftOver' # data inside this folder is simply downloaded from ucsc genome browser
 end_segment_dir: '../testdata/' 
 # dear user, please fill out the end_segment_dir above. It is the place where you store the files that assist us in generating a 1-1 mapping of genomic bins from hg19 to hg38
 CHROMOSOME_LIST: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X']
-code_folder: './liftOver'
 org_all_ct_folder: '../testdata/csrep_output/hg19'
 # this is the folder where we get the output of CSREP's summary chromatin state maps for the original input samples in hg19
 dest_all_ct_folder: '../testdata/csrep_output/hg38/'
