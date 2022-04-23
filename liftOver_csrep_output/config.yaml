@@ -1,23 +1,18 @@
 org_assembly: 'hg19'
 end_assembly: 'Hg38'
 chrom_length_fn: '../testdata/chrom_length_sorted.bed'
-org_segment_fn: '<user-specified>' 
-# dear user, please fill out the org_segment_fn. We wanted to provide it with you in the github folder, but the file is too large so we cannot share it via github. Instead, we provide a download link for it in hg19 at https://public.hoffman2.idre.ucla.edu/ernst/2K9RS/csrep/hg19_oneLine_perBin.bed.gz
-# you will (1) download the file 
-# fill inn the above line with the complete/relative path to the file. 
+org_segment_fn: '../testdata/hg19_oneLine_perBin_chr22.bed.gz' 
+# dear user, please fill out the org_segment_fn. We provide the path to a file that is formatted strictly for chr22, for demo purpuse
 # this file is very simply a bed file with 4 columns: chrom, start, end, chrom_start_end. Each line corresponds to a 200bp bin in the genome. This file is a way that we figured out a workaround to get a 1-1 mapping of 200bp bins from hg19 to hg38. The 1-1 mapping means that each 200bp bin in hg19 is mapped to only one bin in hg38. If there are multiple bins in hg19 mapped to hg38, the pipeline will later get rid of those bins
 # this file will aready be sorted and put into one bin per line by the rule create_bedFile_one_bin_per_row
 liftOver_dir: './liftOver' # data inside this folder is simply downloaded from ucsc genome browser
-end_segment_dir: '<user-specified>' 
-# dear user, please fill out the end_segment_dir above. It is the place where you store the file 
-end_segment_raw: os.path.join(end_segment_dir, end_assembly + '_oneLine_perBin.bed.gz')
-unmapped_fn: os.path.join(end_segment_dir, 'unmapped_' + org_assembly + '_to_' + end_assembly + '.gz')
-destOrg_fn:   os.path.join(end_segment_dir, end_assembly + '_oneLine_perBin_from' + org_assembly + '.bed.gz')
-orgDest_fn: os.path.join(end_segment_dir, org_assembly + '_oneLine_perBin_to' + end_assembly + '.bed.gz')
+end_segment_dir: '../testdata/' 
+# dear user, please fill out the end_segment_dir above. It is the place where you store the files that assist us in generating a 1-1 mapping of genomic bins from hg19 to hg38
 CHROMOSOME_LIST: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X']
 code_folder: '/u/home/h/havu73/project-ernst/source/chromHMM_utilities_unpublished/liftOver'
 
-org_all_ct_folder: '/u/home/h/havu73/project-ernst/diff_pete/roadmap/'
+org_all_ct_folder: '../testdata/csrep_output/hg19'
+# this is the file 
 dest_all_ct_folder: '/u/home/h/havu73/project-ernst/diff_pete/roadmap/hg38/'
 cg_list: ['Digestive', 'Blood_other', 'Heart', 'blood', 'Brain', 'ESC', 'ES-deriv', 'iPSC', 'Muscle', 'Skin', 'Sm_Muscle'] 
 train_mode_list: ['multi_logistic']
