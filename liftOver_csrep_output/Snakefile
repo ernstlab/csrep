@@ -12,17 +12,17 @@ orgDest_fn = os.path.join(end_segment_dir, org_assembly + '_oneLine_perBin_to' +
 CHROMOSOME_LIST = config['CHROMOSOME_LIST']
 org_all_ct_folder = config['org_all_ct_folder']
 dest_all_ct_folder = config['dest_all_ct_folder']
-cg_list = config['cg_list']
+cell_group_list = config['cell_group_list']
 train_mode_list = config['train_mode_list']
 gene_reg_list = config['gene_reg_list']
-num_chromHMM_state = config['num_chromHMM_state'] 
+chromhmm_state_num = config['chromhmm_state_num'] 
 
 rule all:
 	input:
 		destOrg_fn, # first, we will liftOver all the bins from hg19 to hg38 such that only bins that show a 1-1 mapping between the two assembly are reported. This file will have columns: chrom, start, end, org_bin. The first 3 columns correspond to the genomic coordinates of bins in the destination assembly,
 		orgDest_fn, # we will get the reverse mapping of genomic bins from hg19 to hg38. Output columns: org_chrom, org_start, org_end, destBin. destBin would be the form destChrom_destStart_destEnd
-		expand(os.path.join(dest_all_ct_folder, '{cg}', '{tm}', 'representative_data', 'summary_state_track.bed.gz'), cg = cg_list, tm = train_mode_list),
-		expand(os.path.join(dest_all_ct_folder, '{cg}', '{tm}', 'representative_data', 'state_assign_matrix', 'chr{chrom}_liftOver_probState.txt.gz'), cg = cg_list, tm =  train_mode_list, chrom = CHROMOSOME_LIST)
+		expand(os.path.join(dest_all_ct_folder, '{cg}', '{tm}', 'representative_data', 'summary_state_track.bed.gz'), cg = cell_group_list, tm = train_mode_list),
+		expand(os.path.join(dest_all_ct_folder, '{cg}', '{tm}', 'representative_data', 'state_assign_matrix', 'chr{chrom}_liftOver_probState.txt.gz'), cg = cell_group_list, tm =  train_mode_list, chrom = CHROMOSOME_LIST)
 
 rule create_bedFile_one_bin_per_row:
 	input:
@@ -128,5 +128,5 @@ rule map_state_assign_matrix:
 		output_folder = os.path.join(dest_all_ct_folder, '{cg}', '{tm}', 'representative_data', 'state_assign_matrix'),
 	shell:
 		"""
-		python map_state_assign_matrix.py --csrep_folder {params.csrep_folder} --orgDest_fn {orgDest_fn} --output_folder {params.output_folder} --num_chromHMM_state {num_chromHMM_state} --rewrite_existing_chrom
+		python map_state_assign_matrix.py --csrep_folder {params.csrep_folder} --orgDest_fn {orgDest_fn} --output_folder {params.output_folder} --chromhmm_state_num {chromhmm_state_num} --rewrite_existing_chrom
 		"""

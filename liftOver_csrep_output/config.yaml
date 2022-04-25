@@ -13,7 +13,7 @@ org_all_ct_folder: '../testdata/csrep_output/hg19'
 # this is the folder where we get the output of CSREP's summary chromatin state maps for the original input samples in hg19
 dest_all_ct_folder: '../testdata/csrep_output/hg38/'
 # this is the folder where we get the output of CSREP's summary chromatin state maps being mapped from hg19 to hg38
-cg_list: ['Brain', 'ESC'] 
+cell_group_list: ['Brain', 'ESC'] 
 train_mode_list: ['multi_logistic']
 gene_reg_list: ['chr1_24', 'chrX_15']
-num_chromHMM_state: 18 
+chromhmm_state_num: 18 

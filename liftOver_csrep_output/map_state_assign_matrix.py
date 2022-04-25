@@ -13,8 +13,8 @@ parser.add_argument('--orgDest_fn', type=str, required=True,
 	help = 'the 1-1 mapping of genomic bins from the orgiginal assembly to destimation assembly. This should be the output of convert_map_liftOver_to_orgAssembly.py. Format columns: org_chrom, org_start, org_end, destBin. destBin would be the form destChrom_destStart_destEnd')
 parser.add_argument('--output_folder', type=str, required=True,
 	help = 'where there are files, each representing a region in the genome. The data should be the summary chromatin state assigment matrix IN THE DESTINATION ASSEMBLY')
-parser.add_argument('--num_chromHMM_state', type=int, required=True,
-	help = 'num_chromHMM_state')
+parser.add_argument('--chromhmm_state_num', type=int, required=True,
+	help = 'chromhmm_state_num')
 parser.add_argument('--rewrite_existing_chrom', action='store_true',
 	help = 'if this flag is present, we will rewrite results for all chromosomes, even if the output files associated with some of them are already produced')
 parser.set_defaults(rewrite_existing_chrom=False)
@@ -24,8 +24,8 @@ helper.check_dir_exist(args.csrep_folder)
 helper.check_file_exist(args.orgDest_fn)
 helper.make_dir(args.output_folder)
 
-def read_rep_df(fn, num_chromHMM_state):
-	right_colnames = list(map(lambda x: 'state_' + str(x+1), range(num_chromHMM_state)))
+def read_rep_df(fn, chromhmm_state_num):
+	right_colnames = list(map(lambda x: 'state_' + str(x+1), range(chromhmm_state_num)))
 	print(fn)
 	try:
 		df = pd.read_csv(fn, header = 0, index_col = 0, sep = '\t')
@@ -36,11 +36,11 @@ def read_rep_df(fn, num_chromHMM_state):
 	return df
 
 
-def map_assign_matrix_one_orgFn(org_fn, chrom_map_df, region_index, num_chromHMM_state):
+def map_assign_matrix_one_orgFn(org_fn, chrom_map_df, region_index, chromhmm_state_num):
 	'''
 	chrom_map_df: org_chrom, org_start, org_end, destBin. destBin would be the form destChrom_destStart_destEnd. The data here should be restricted to one genomic region on the original assembly
 	'''
-	org_df = read_rep_df(org_fn, num_chromHMM_state)
+	org_df = read_rep_df(org_fn, chromhmm_state_num)
 	region_start_bp = helper.NUM_BP_PER_WINDOW * region_index
 	region_end_bp = region_start_bp + helper.NUM_BP_PER_WINDOW
 	region_map_df = chrom_map_df[(chrom_map_df['start'] >= region_start_bp) & (chrom_map_df['end'] < region_end_bp)]
@@ -62,15 +62,15 @@ def write_result_destChrom_diff_orgChrom(other_chrom_df, orgChrom, output_folder
 		oChrom_df.to_csv(save_fn, header = True, index = False, sep = '\t', compression = 'gzip')
 	return 
 
-def map_assign_matrix_one_chrom(csrep_folder, chrom, orgDest_df, num_chromHMM_state, output_folder):
+def map_assign_matrix_one_chrom(csrep_folder, chrom, orgDest_df, chromhmm_state_num, output_folder):
 	chrom = 'chr{}'.format(chrom)
 	orgDest_df = orgDest_df[orgDest_df['chrom'] == chrom] # i named this orgDest_df instead of something else because I wanted to save computation space, orgDest_df for the whole genome is itself a very large dataframe
 	num_org_fn = len(glob.glob(csrep_folder + '/{}_*_avg_pred.txt.gz'.format(chrom)))
-	output_colnames = ['chrom', 'start', 'end'] + list(map(lambda x: 'state_{}'.format(x+1), range(num_chromHMM_state)))
+	output_colnames = ['chrom', 'start', 'end'] + list(map(lambda x: 'state_{}'.format(x+1), range(chromhmm_state_num)))
 	result_df = pd.DataFrame(columns = output_colnames)
 	for region_index in range(num_org_fn):
 		org_fn = os.path.join(csrep_folder, '{c}_{i}_avg_pred.txt.gz'.format(c=chrom, i=region_index))
-		this_region_df = map_assign_matrix_one_orgFn(org_fn, orgDest_df, region_index, num_chromHMM_state)
+		this_region_df = map_assign_matrix_one_orgFn(org_fn, orgDest_df, region_index, chromhmm_state_num)
 		result_df = result_df.append(this_region_df) # columns: chrom, start, end, state_1 --> state_18
 	# now that we got all the liftedOver data for regions in the chrom in the original assembly
 	# we will first filter out only region that are in this chrom first
@@ -84,11 +84,11 @@ def map_assign_matrix_one_chrom(csrep_folder, chrom, orgDest_df, num_chromHMM_st
 	result_df.to_csv(save_fn, header=True, index=False, sep='\t', compression='gzip')
 	return 
 
-def map_assign_matrix_multiple_chrom(csrep_folder, chrom_list, orgDest_df, num_chromHMM_state, output_folder):
+def map_assign_matrix_multiple_chrom(csrep_folder, chrom_list, orgDest_df, chromhmm_state_num, output_folder):
 	# for each chrom C, map all regions in C from the original chrom to the destination assembly 
 	# this function should be called for each of the processes running in parallel during multiprocessing
 	for chrom in chrom_list:
-		map_assign_matrix_one_chrom(csrep_folder, chrom, orgDest_df, num_chromHMM_state, output_folder)
+		map_assign_matrix_one_chrom(csrep_folder, chrom, orgDest_df, chromhmm_state_num, output_folder)
 	return
 
 def combine_mapped_data_from_multiChrom_to_oneChrom_in_dest_assembly(output_folder, chrom):
@@ -120,13 +120,13 @@ def get_chrom_list(output_folder, rewrite_existing_chrom):
 	print(chrom_list)
 	return chrom_list
 
-def map_assign_matrix_allChrom_multiProcess(csrep_folder, orgDest_fn, num_chromHMM_state, output_folder, rewrite_existing_chrom):
+def map_assign_matrix_allChrom_multiProcess(csrep_folder, orgDest_fn, chromhmm_state_num, output_folder, rewrite_existing_chrom):
 	orgDest_df = pd.read_csv(orgDest_fn, header = None, index_col=None, sep='\t')
 	orgDest_df.columns = ['chrom', 'start', 'end', 'destBin']
 	num_cores = 4
 	chrom_list = get_chrom_list(output_folder, rewrite_existing_chrom)
 	partition_chrom_list = helper.partition_file_list(chrom_list, num_cores)
-	processes = [mp.Process(target = map_assign_matrix_multiple_chrom, args =(csrep_folder, partition_chrom_list[i], orgDest_df, num_chromHMM_state, output_folder)) for i in range(num_cores)]
+	processes = [mp.Process(target = map_assign_matrix_multiple_chrom, args =(csrep_folder, partition_chrom_list[i], orgDest_df, chromhmm_state_num, output_folder)) for i in range(num_cores)]
 	for p in processes:
 		p.start()
 	for i, p in enumerate(processes):
@@ -143,4 +143,4 @@ def map_assign_matrix_allChrom_multiProcess(csrep_folder, orgDest_fn, num_chromH
 	print ('Done!')
 	return
 
-map_assign_matrix_allChrom_multiProcess(args.csrep_folder, args.orgDest_fn, args.num_chromHMM_state, args.output_folder, args.rewrite_existing_chrom)
+map_assign_matrix_allChrom_multiProcess(args.csrep_folder, args.orgDest_fn, args.chromhmm_state_num, args.output_folder, args.rewrite_existing_chrom)
