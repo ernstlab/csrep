@@ -79,6 +79,8 @@ Right now, we create CSREP such that you can simply modify the ```config/config.
 # Tutorial
 Please see this (link)[https://github.com/ernstlab/csrep/blob/master/tutorial.md]
 
+# liftOver results to another assembly
+Given the output of chromatin state segmentation, we provide source code and detailed readme of a separate pipeline that liftOver the output. We used such pipeline to create the summary chromatin state maps for 11 cell groups from Roadmap from hg19 (produced by CSRE) to hg38. The pipeline can be found (here)[https://github.com/ernstlab/csrep/tree/master/liftOver_csrep_output]. The accompanying readme/tutorial is (here)[]
 # License
 All code is provided under the MIT Open Acess License Copyright 2021 Ha Vu and Jason Ernst
 
