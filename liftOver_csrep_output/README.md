@@ -45,5 +45,5 @@ To run this conversion code, we will need to specify some varibles in the config
 \|\_\_\|\_\_\|\_\_ representative_data\
 \|\_\_\|\_\_\|\_\_\|\_\_ summary_state_track.bed.gz: file of the summary chromatin state map for the ```<cell_group>```\
 \|\_\_\|\_\_\|\_\_\|\_\_ state_assign_matrix: folder where the data of probabilities of state assignments across the genome in ```dest_assembly``` are stored\
-\|\_\_\|\_\_\|\_\_\|\_\_\|\_\_ ```<chrom>_liftOver_probState.txt.gz```: Each file shows the data of state assignment matrix for one chromosome. \
+\|\_\_\|\_\_\|\_\_\|\_\_\|\_\_ ```<chrom>_liftOver_probState.txt.gz```: Each file shows the data of state assignment matrix for one chromosome. 
 
