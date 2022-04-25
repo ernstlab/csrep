@@ -27,12 +27,18 @@ This means, for example, regions chr1:10,000-10,200 in ```org_assembly```  (firs
 
 - Now, we will try to convert the CSREP output. The procedure simply takes in the CSREP summary data, and the 1-1 mapping of genomic regions that we produced in ```orgDest_fn```, and will map genomic bins from CSREP output (in ```org_assembly```) to genomic bins in ```dest_assembly```. 
 To run this conversion code, we will need to specify some varibles in the configurations (```config/config.yaml```). Some variables in this pipeline will correspond to those in the CSREP pipeline (refer to the main readme and the CSREP tutorial as you go along this tutorial, if you are confused):
-(1) We specified ```all_cg_out_dir``` in CSREP pipeline, where there are subfolders corresponding to different groups of samples. The exact file path should be copied to the config file of this liftOver pipeline to the variable name ```org_all_ct_folder```. This variable refers to the folder from ```org_assembly``` where we can find subfolders of the cell groups that we obtained CSREP output for. \\
-(2) We specified ```cell_group_list``` in CSREP pipeline, specifying the list of cell groups that we would like to obtain CSREP summary/differential data for. In this liftOver pipeline, we will also fill in the variable ```cell_group_list``` in the configuration. This will specify the list of cell groups that we would like to liftOver CSREP data for, therefore, ```cell_group_list``` should be a subset of ```cell_group_list```. \\
-(3) We specified ```train_mode_list``` in CSREP pipeline, which can be a subset of ```['multi_logistic', 'baseline']```. In this liftOver pipeline, we will also fill in the varible ```train_mode_list``` based on what methods' summary output (CSREP or baseline or both) that you would like to liftOver. Yes, we can liftOver the output of base_count (as named in the manuscript) too. \\
-(4) We specified ```chromhmm_state_num``` as the number of chromatin states in the input annotations. We will do the same here. \\
-(5) In this liftOver pipeline, we will specify ```gene_reg_list``` as the list of genomic regions in the genome. We set them to a list of two regions now in the configuration, you can keep it as is. \\
-(6) The output will include: (1) the summary chromatin state map in ```dest_assembly```, and the state assignment matrix in ```dest_assembly```, all will be stored inside folder ```dest_all_ct_folder``` (users, specify this folder in the ```config/config.yaml```). The structure of the output are as follows: \\
+(1) We specified ```all_cg_out_dir``` in CSREP pipeline, where there are subfolders corresponding to different groups of samples. The exact file path should be copied to the config file of this liftOver pipeline to the variable name ```org_all_ct_folder```. This variable refers to the folder from ```org_assembly``` where we can find subfolders of the cell groups that we obtained CSREP output for. 
+
+(2) We specified ```cell_group_list``` in CSREP pipeline, specifying the list of cell groups that we would like to obtain CSREP summary/differential data for. In this liftOver pipeline, we will also fill in the variable ```cell_group_list``` in the configuration. This will specify the list of cell groups that we would like to liftOver CSREP data for, therefore, ```cell_group_list``` should be a subset of ```cell_group_list```.
+
+(3) We specified ```train_mode_list``` in CSREP pipeline, which can be a subset of ```['multi_logistic', 'baseline']```. In this liftOver pipeline, we will also fill in the varible ```train_mode_list``` based on what methods' summary output (CSREP or baseline or both) that you would like to liftOver. Yes, we can liftOver the output of base_count (as named in the manuscript) too. 
+
+(4) We specified ```chromhmm_state_num``` as the number of chromatin states in the input annotations. We will do the same here. 
+
+(5) In this liftOver pipeline, we will specify ```gene_reg_list``` as the list of genomic regions in the genome. We set them to a list of two regions now in the configuration, you can keep it as is. 
+
+(6) The output will include: (1) the summary chromatin state map in ```dest_assembly```, and the state assignment matrix in ```dest_assembly```, all will be stored inside folder ```dest_all_ct_folder``` (users, specify this folder in the ```config/config.yaml```). The structure of the output are as follows: 
+
 ```dest_all_ct_folder```
 |__ ```<cell_group>```
 |__|__ ```<train_mode>```: multi_logistic (CSREP) or baseline (base_count)
