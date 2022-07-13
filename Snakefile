@@ -81,7 +81,7 @@ def get_input_fn_for_average_pred_results (wildcards):
      list_fn = os.path.join(wildcards.one_cg_out_dir, 'sample.list')
      ct_list = [line.strip() for line in open(list_fn, "r").readlines()]
      for ct in ct_list:
-          results += list(map(lambda x: os.path.join(wildcards.one_cg_out_dir, 'multi_logistic', 'representative_data', 'pred_' + ct, x + '_pred_out.txt.gz'), gene_reg_list))
+          results += list(map(lambda x: os.path.join(wildcards.one_cg_out_dir, 'CSREP', 'representative_data', 'pred_' + ct, x + '_pred_out.txt.gz'), gene_reg_list))
      return results
 
 rule average_pred_results_csrep:
@@ -89,11 +89,11 @@ rule average_pred_results_csrep:
      input:
           get_input_fn_for_average_pred_results
      output:
-          expand(os.path.join('{{one_cg_out_dir}}', "multi_logistic", 'representative_data', "average_predictions", "{gene_reg}_avg_pred.txt.gz"), gene_reg = gene_reg_list)
+          expand(os.path.join('{{one_cg_out_dir}}', "CSREP", 'representative_data', "average_predictions", "{gene_reg}_avg_pred.txt.gz"), gene_reg = gene_reg_list)
      params:
           list_fn = os.path.join('{one_cg_out_dir}', 'sample.list'),
-          out_dir = os.path.join('{one_cg_out_dir}', 'multi_logistic', 'representative_data', 'average_predictions'),
-          all_ct_pred_dir = os.path.join('{one_cg_out_dir}', 'multi_logistic', 'representative_data'), # where all the subfolders of pred_<ct> are stored
+          out_dir = os.path.join('{one_cg_out_dir}', 'CSREP', 'representative_data', 'average_predictions'),
+          all_ct_pred_dir = os.path.join('{one_cg_out_dir}', 'CSREP', 'representative_data'), # where all the subfolders of pred_<ct> are stored
           replace_existing_files = 0, # 0 (no, only create result files for those that have not been outputted) or 1 (yes, rewrite everything)
      shell:
           """
@@ -127,7 +127,7 @@ rule create_pred_baseline_dir:
      # no other rules need to finish first before this rule
      input: 
           get_training_data_one_group, # in order to get this, the rule get_sample_bedfile_one_sample has to be called for all the samples in this group
-          all_ct_segment_folder
+          expand(os.path.join(all_ct_segment_folder, '{gene_reg}_combined_segment.bed.gz'), gene_reg = gene_reg_list),
      params: 
           list_fn = os.path.join('{one_cg_out_dir}', 'sample.list'),
           this_predict_outDir = os.path.join('{one_cg_out_dir}', 'baseline', 'representative_data', 'average_predictions')
@@ -142,13 +142,13 @@ rule create_pred_baseline_dir:
 rule create_pred_multi_log_dir:
      input: 
           get_training_data_one_group, # in order to get this, the rule get_sample_bedfile_one_sample has to be called for all the samples in this group
-          all_ct_segment_folder
+          expand(os.path.join(all_ct_segment_folder, '{gene_reg}_combined_segment.bed.gz'), gene_reg = gene_reg_list),
      params: 
           list_fn = os.path.join('{one_cg_out_dir}', 'sample.list'),
-          this_predict_outDir = os.path.join('{one_cg_out_dir}', 'multi_logistic', 'representative_data', 'pred_{train_ct}'),
+          this_predict_outDir = os.path.join('{one_cg_out_dir}', 'CSREP', 'representative_data', 'pred_{train_ct}'),
           replace_existing_files = 0, # 0 (no, only create result files for those that have not been outputted) or 1 (yes, rewrite everything)
      output: 
-          (expand(os.path.join('{{one_cg_out_dir}}', 'multi_logistic', 'representative_data', 'pred_{{train_ct}}', "{gene_reg}_pred_out.txt.gz"), gene_reg = gene_reg_list))
+          (expand(os.path.join('{{one_cg_out_dir}}', 'CSREP', 'representative_data', 'pred_{{train_ct}}', "{gene_reg}_pred_out.txt.gz"), gene_reg = gene_reg_list))
      shell:
           """
           python ./scripts/train_multiLog_model.py {training_data_folder} {all_ct_segment_folder} {params.this_predict_outDir} {wildcards.train_ct} {num_chromHMM_state} {params.list_fn} {params.replace_existing_files}
