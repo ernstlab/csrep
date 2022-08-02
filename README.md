@@ -82,10 +82,10 @@ Right now, we create CSREP such that you can simply modify the ```config/config.
 - ```cell_group_list```: the list of group names of groups of samples in that we would like to calculate the representative/differential chromatin state maps for. If ```is_calculate_diff_two_groups``` is set to 1 (meaning you want to calculate differential chromatin scores), then ```cell_group_list``` should specify two group names, otherwise the program may crash
 
 # Tutorial
-Please see this (link)[https://github.com/ernstlab/csrep/blob/master/tutorial.md]
+Please see this <a href="https://github.com/ernstlab/csrep/blob/master/tutorial.md">link</a>.
 
 # liftOver results to another assembly
-Given the output of chromatin state segmentation, we provide source code and detailed readme of a separate pipeline that liftOver the output. We used such pipeline to create the summary chromatin state maps for 11 cell groups from Roadmap from hg19 (produced by CSRE) to hg38. The pipeline can be found (here)[https://github.com/ernstlab/csrep/tree/master/liftOver_csrep_output]. The accompanying readme/tutorial is (here)[https://github.com/ernstlab/csrep/blob/master/liftOver_csrep_output/README.md]
+Given the output of chromatin state segmentation, we provide source code and detailed readme of a separate pipeline that liftOver the output. We used such pipeline to create the summary chromatin state maps for 11 cell groups from Roadmap from hg19 (produced by CSRE) to hg38. The pipeline can be found <a href="https://github.com/ernstlab/csrep/tree/master/liftOver_csrep_output">here</a>. The accompanying readme/tutorial is <a href="https://github.com/ernstlab/csrep/blob/master/liftOver_csrep_output/README.md">here</a>
 # License
 All code is provided under the MIT Open Acess License Copyright 2021 Ha Vu and Jason Ernst
 
