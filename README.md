@@ -27,7 +27,7 @@ Below is the file structure of this download folder
 Users can easily view the provided summary chromatin state maps for cell groups in Roadmap and Epimap on USCS Genome Browser. To do so:
 - Get onto the genome browser with the desired configuration (reference genome assembly, etc.).
 - Click 'Add custom tracks'.
-- Copy and paste the links to individual data files from our [download link](https://public.hoffman2.idre.ucla.edu/ernst/2K9RS/csrep/) that users want to view. 
+- Copy and paste the links to individual data files from our <a href="https://public.hoffman2.idre.ucla.edu/ernst/2K9RS/csrep/">download link</a> that users want to view. 
 - Submit and Go.
 
 ## Other data
@@ -41,7 +41,7 @@ If you run into any problems running CSREP or following the tutorial accompanyin
 We create an environment that is compatible with our program, which you install as a conda environment: ```conda env create -f env/csrep_env.yml```
 
 ## Test data
-To show you how CSREP can be run, we provided an example that include 18-chromatin-state segmentation data for 5 samples of ESC groups and 7 samples of Brain group from Roadmap Epigenomics Project (https://egg2.wustl.edu/roadmap/web_portal/chr_state_learning.html#exp_18state). We restricted the example input to include only data from chromosome 22.
+To show you how CSREP can be run, we provided an example that include 18-chromatin-state segmentation data for 5 samples of ESC groups and 7 samples of Brain group from <a href="https://egg2.wustl.edu/roadmap/web_portal/chr_state_learning.html#exp_18state">Roadmap Epigenomics Project</a>. We restricted the example input to include only data from chromosome 22.
  
 ## How to install CSREP
 - Clone this github repository
