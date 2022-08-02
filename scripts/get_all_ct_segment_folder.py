@@ -1,3 +1,25 @@
+#!/usr/bin/env python
+
+'''
+This script will take in the data from input folder that stores the chromatin state maps for many input samples (they can be from one group or from many different potentially overlapping groups), and it will preprocess the data as followings:s
+Given that users already arranged their input files in the following structure: 
+|__ input_folder
+|__|__ <ct. Example: E003>
+|__|__|__ <ct><input_suffix> --> example: E003_chr22_core_K27ac_segments.bed.gz --> this file contains the chromatin state map for the sample E003
+
+Then, this script will combine the data from multiple samples and represent their chromatin state maps in different files, representing multiple <10Mbp windows (if the chromatin states are defined at 200-bp resolution, otherwise each region consists of 50,000 chromatin state bins). This pre-processsing step is useful in speeding up the CSREP pipeline.  
+The output_folder is arranged as follows: 
+|__ output_folder
+|__|__ <region_index>_combined_segment.bed.gz: a file of at most 50,001 rows (1 header row). Each row correspond to a 200-bp window (or a genomic bin for which the chromatin state is defined). Each column corresponds to one input sample. The value of each cell is the chromatin state at the corresponding genomic position in the corresponding sample. <region_index> follows the format: <chrom>_<region_index> --> example: chr1_0 corresponds to the first 50,000 genomic bins in chromosome 1. If the chromatin state bins are defined at 200-bp resolution, as default setting of chromHMM or SegWay, then each genomic region will cover 10Mb of the genome. 
+ 
+command-line argument: 
+python get_all_ct_segment_folder.py
+input_folder: where all the raw data for all the ct are stored
+output_folder: where we store files that correspond to regions on the genome, and within each file, we store the data of segmentation for all the ct that are in the input_folder
+input_suffix: inside the input_folder, the file names are <ct><input_suffix>. In testdata provided with the repository, it would be _chr22_core_K27ac_segments.bed.gz
+state_annot_fn: the annotation of states (state names, state index, etc.)
+redo_existing_files: 0 or 1: 1 (yes, rewrite all the existing files in the output_folder, or 0 (no, only write files that have not been produced)
+'''
 # tested 03/08/2021
 import os
 import sys
@@ -47,7 +69,7 @@ def print_one_chrom_data_to_text(chrom_df, chrom, output_folder, redo_existing_f
 		if (os.path.isfile(save_fn)) and redo_existing_files == 0:  # file already exists and users specifies that they do not need to rewrite this file
 			continue 
 		start_row_index = file_index * helper.NUM_BIN_PER_WINDOW
-		end_row_index = start_row_index + helper.NUM_BIN_PER_WINDOW
+		end_row_index = start_row_index + helper.NUM_BIN_PER_WINDOW - 1 # have to add the -1 because in pandas indexing, both ends of the indices are included, unlike regular python convention
 		save_df = chrom_df.loc[start_row_index:end_row_index]
 		save_df.to_csv(save_fn, header = True, index = False, sep = '\t', compression = 'gzip')
 	last_index = num_files_to_print - 1

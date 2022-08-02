@@ -1,11 +1,29 @@
+#!/usr/bin/env python
+'''
+This file will train a multi-variate logistic regression model to predict the chromatin state maps for a sample, based on the chromatin state maps in other samples. 
+
+command-line argument: 
+python train_multiLog_auto1Hot.py 
+train_data_folder: where the state assignment and of training data are stored for all cell types. Each cell type has its own file
+all_ct_segment_folder: where segmentation data of all cell types are stored, for the entire genome, so that we can get data for prediction out.
+predict_outDir: where output data of the predictions of cell types are stored
+response_ct: the cell type that we are trying to predict from the training dataset. This data is the Y value in our model training
+num_chromHMM_state: Number of chromHMM states that are shared across different cell types
+all_ct_fn: number of cell types that we will train
+replace_existing_files: whether or not we would want to replace_existing_ output files 0 (no, only create result files for those that have not been outputted) or 1 (yes, rewrite everything)
+seed: random seed for reproducibility
+'''
 import pandas as pd 
 import numpy as np 
 from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import make_column_transformer
+# import multiprocessing as mp
 import os
 import sys
-import time
 import glob
 import helper
+import time
 def get_X_colnames (train_cell_types, num_chromHMM_state):
 	'''
 	train_cell_types = ['E034', 'E037']
@@ -21,18 +39,13 @@ def get_state_number(state_annot):
 	# 'E18' --> 18 (integers)
 	return int(state_annot[1:])
 
-def get_binary_state_assignment(state_train_segment, num_chromHMM_state): 
-	'''
-	a series of state assignment with indices ['E034', 'E037'] --> [E1, E2]
-	num_chromHMM_state = 2
-	--> a series of 0/1 with indices ['E034_1', 'E034_2', 'E037_1', 'E037_2'] --> [1,0,0,1]
-	'''
-	results = [0] * (len(state_train_segment) * num_chromHMM_state)
-	for ct_index, train_segment in enumerate(state_train_segment): 
-		train_segment = int(train_segment[1:]) # get rid of the E as a prefix, one_based
-		index_to_put_one = (int(train_segment) - 1) + ct_index * num_chromHMM_state # zero_based
-		results[index_to_put_one] = 1
-	return pd.Series(results)
+def transform_oneHot_trainCt_df(X_segment_df, train_cell_types, num_chromHMM_state, n_jobs):
+	if not (X_segment_df.columns == train_cell_types).all():
+		X_segment_df = X_segment_df[train_cell_types] # to make sure that we order the ct correctly, so that there will be matching columns as input features into the model for both training and for prediction
+	all_states = np.array(list(map(lambda x: 'E{}'.format(x+1), range(num_chromHMM_state))))
+	transformer = make_column_transformer((OneHotEncoder(categories = [all_states]*len(train_cell_types), handle_unknown = 'ignore'), train_cell_types), n_jobs = n_jobs, remainder='drop')
+	X_data = transformer.fit_transform(X_segment_df)
+	return X_data.toarray() # do not forget the .toarray function because I found out that the weights change slightly with and without the .toarray() function
 
 def get_XY_segmentation_data (train_cell_types, response_ct, num_chromHMM_state, train_data_folder):
 	# given the segmentation data of multiple cell types, we want to extract information from the cell types that we will use as predictor (X) and response (Y). Predictor will be binarized with ct_state combinations as columns. Response will be just state labels 1 --> num_chromHMM_state. Rows of these two data frames correspond to different positions on the genome. Genome positions in all cell types' data are ordered exactly as in /u/home/h/havu73/project-ernst/diff_pete/roadmap/sample_genome_regions.gz
@@ -42,32 +55,33 @@ def get_XY_segmentation_data (train_cell_types, response_ct, num_chromHMM_state,
 		this_ct_df = pd.read_csv(this_ct_fn, sep = '\t', header = 0) # open that file
 		this_ct_df = this_ct_df[ct] # only pick columns that annotates the chromatin state for this cell type at each of those position
 		Xtrain_segment_df = pd.merge(Xtrain_segment_df, this_ct_df, how = 'outer', left_index = True, right_index = True) # join columns, index-based. This is equivalent to a cbind in R
+	Xtrain_segment_df = Xtrain_segment_df[Xtrain_segment_df.apply(lambda x: (~x.str.contains('[.,]', regex=True)))].dropna() # drop rows where in at least one cell type the state annnotation is either an empty match (.) or a multiple-state match (,). The multiple state match should not happen if the input data provided by users are directly learned from ChromHMM. However, in some cases, when the input annotations are actually lifted-Over from one ref.genome to another, it can happen that multiple states are maped to the same place. Usually, we want to get rid of those regions, but if the users forgot to do that, we will do that instead here for training data. 
 	# after getting the state segmentations for all response cell types (E003 --> E127). Now we binarize the data: E003_S1 --> E003_S18 etc.
-	print("get_XY_segmentation_data")
+	print("Xtrain_segment_df before one hot encoding")
 	print(Xtrain_segment_df.head())
-	# Xtrain_segment_df = Xtrain_segment_df.head(5000) # TO BE DELETED
-	Xtrain_segment_df = Xtrain_segment_df.apply(lambda x: get_binary_state_assignment(x, num_chromHMM_state), axis = 1)# apply function row-wise, change from the state train_segmentation to binarized of state
-	Xtrain_segment_df.columns = get_X_colnames(train_cell_types, num_chromHMM_state)
+	n_jobs = 4
+	Xtrain_data = transform_oneHot_trainCt_df(Xtrain_segment_df, train_cell_types, num_chromHMM_state, n_jobs)
+	print('Done getting binarized data for input sample annotations')
 	Y_ct_fn = os.path.join(train_data_folder, response_ct + '_train_data.bed.gz')
 	Y_df = pd.read_csv(Y_ct_fn, header = 0, sep = '\t')
 	Y_df = Y_df[response_ct] # get the state train_segmentation for the response variable
-	# Y_df = Y_df.head(5000) # TO BE DELETED
 	Y_df = Y_df.apply(get_state_number)
-	return Xtrain_segment_df, Y_df # X is binarized, Y is just state label 1 --> num_chromHMM_state
+	return Xtrain_data, Y_df # X is binarized, Y is just state label 1 --> num_chromHMM_state
 
 
 def get_predictorX_segmentation_data(train_cell_types, num_chromHMM_state, segment_fn):
 	# given the segmentation data of multiple cell types, we want to extract information from the cell types that we will use as predictor (X). Predictor will be binarized with ct_state combinations as columns. Rows of this data frame correspond to different positions on the genome.
 	segment_df = pd.read_csv(segment_fn, sep = '\t', header = 0)
 	segment_df = segment_df[train_cell_types] # only get the data of the cell types that we need as predictors
-	# segment_df = segment_df.applymap(get_state_number)# get the state train_segmentation from 'E18' --> 18 (integers)
-	segment_df = segment_df.apply(lambda x: get_binary_state_assignment(x, num_chromHMM_state), axis = 1) # apply function row-wise, change from the state train_segmentation to binarized of state
-	segment_df.columns = get_X_colnames(train_cell_types, num_chromHMM_state)
+	n_jobs = 4
+	segment_df = transform_oneHot_trainCt_df(segment_df, train_cell_types, num_chromHMM_state, n_jobs)
 	return segment_df
 
-def train_multinomial_logistic_regression(X_df, Y_df, num_chromHMM_state):
+def train_multinomial_logistic_regression(X_df, Y_df, num_chromHMM_state, seed):
 	# give the Xtrain_segment_df and Y_df obtained from get_XY_segmentation_data --> train a logistic regression object
+	np.random.seed(seed)
 	regression_machine = LogisticRegression(random_state = 0, solver = 'lbfgs', multi_class = 'multinomial', max_iter = 10000).fit(X_df, Y_df)
+	print(regression_machine.coef_)
 	return regression_machine 
 
 def predict_segmentation_one_genomic_window(segment_fn, output_fn, train_cell_types, response_ct, num_chromHMM_state, regression_machine):
@@ -85,7 +99,6 @@ def predict_segmentation_one_genomic_window(segment_fn, output_fn, train_cell_ty
 	response_df = response_df[np.arange(1, num_chromHMM_state + 1, 1)] # rearrange the columns from 1 --> num_chromHMM_state
 	# 3. Turn the results into readable format, then write to file. 
 	response_df.columns = list(map(lambda x: "state_" + str(x + 1), range(num_chromHMM_state)))
-	print(output_fn)
 	response_df.to_csv(output_fn, header = True, index = False, compression = 'gzip', sep = '\t')	
 	print ("Done producing file: " + output_fn)
 
@@ -128,7 +141,7 @@ def find_uncalculated_gene_regions(predict_outDir, all_ct_segment_folder, replac
 
 def predict_segmentation (all_ct_segment_folder, regression_machine, predict_outDir, train_cell_types, response_ct, num_chromHMM_state, replace_existing_files):
 	# 1. Get list of segmentation files corresponding to different windows on the genome.
-	uncalculated_region_list = find_uncalculated_gene_regions(predict_outDir, all_ct_segment_folder, replace_existing_files)
+	uncalculated_region_list = find_uncalculated_gene_regions(predict_outDir, all_ct_segment_folder, replace_existing_files) 
 	segment_fn_list = list(map(lambda x: os.path.join(all_ct_segment_folder, x + '_combined_segment.bed.gz'), uncalculated_region_list))
 	output_fn_list = list(map(lambda x: os.path.join(predict_outDir, x + "_pred_out.txt.gz"), uncalculated_region_list)) # get the output file names corresponding to different regions on the genome
 	# 2. partition the list of file names into groups, for later putting into jobs for multiple processes
@@ -153,7 +166,8 @@ def get_train_cell_types(all_ct_fn, response_ct):
 	return ct_list
 
 def main():
-	num_mandatory_args = 8
+	start_time = time.time()
+	num_mandatory_args = 9
 	if len(sys.argv)!= num_mandatory_args: 
 		usage()
 	train_data_folder = sys.argv[1]
@@ -174,22 +188,25 @@ def main():
 	replace_existing_files = helper.get_command_line_integer(sys.argv[7])
 	assert replace_existing_files in [0,1], 'replace_existing_files should be 0 (no, only create result files for those that have not been outputted) or 1 (yes, rewrite everything)'
 	# get the list of train_cell_types as our training features
+	seed = helper.get_command_line_integer(sys.argv[8])
 	train_cell_types = get_train_cell_types(all_ct_fn, response_ct)
 	print ("Done getting command line arguments")
 	# 1. Get the data of predictors and response for training
 	Xtrain_segment_df, Y_df = get_XY_segmentation_data (train_cell_types, response_ct, num_chromHMM_state, train_data_folder)
-	print ("Done getting one hot data")
-	print (Xtrain_segment_df.head())
-	print ()
+	end_time = time.time()
+	print ("Done getting one hot data: {}".format(end_time - start_time))
 	# 2. Get the regression machine
-	regression_machine = train_multinomial_logistic_regression(Xtrain_segment_df, Y_df, num_chromHMM_state)
-	print ("Done training")
+	regression_machine = train_multinomial_logistic_regression(Xtrain_segment_df, Y_df, num_chromHMM_state, seed)
+	print(regression_machine.coef_)
+	end_time = time.time()
+	print ("Done training: {}".format(end_time - start_time))
 	# 3. Based on the machine just created, process training data and then predict the segmentation at each position for the response_ct
 	predict_segmentation (all_ct_segment_folder, regression_machine, predict_outDir, train_cell_types, response_ct, num_chromHMM_state,  replace_existing_files)
-	print ("Done predicting whole genome")
+	end_time = time.time()
+	print ("Done predicting whole genome: {}".format(end_time - start_time))
 	
 def usage():
-	print ("train_multinomial_logistic_regression.py ")
+	print ("python train_multiLog_auto1Hot.py ")
 	print ("train_data_folder: where the state assignment and of training data are stored for all cell types. Each cell type has its own file")
 	print ("all_ct_segment_folder: where segmentation data of all cell types are stored, for the entire genome, so that we can get data for prediction out.")
 	print ("predict_outDir: where output data of the predictions of cell types are stored")
@@ -197,6 +214,7 @@ def usage():
 	print ("num_chromHMM_state: Number of chromHMM states that are shared across different cell types")
 	print ("all_ct_fn: number of cell types that we will train")
 	print ("replace_existing_files: whether or not we would want to replace_existing_ output files 0 (no, only create result files for those that have not been outputted) or 1 (yes, rewrite everything)")
+	print ('seed: random seed for reproducibility')
 	exit(1)
 
 main()

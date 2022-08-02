@@ -1,17 +1,19 @@
+#!/usr/bin/env python
+'''
+This code will create the file of summar chromatin state maps, based on the chromatin state assignment probabilities outputted by CSREP/ base_count. The state assigned at each genomic bin corresond to one with the highest summary chromatin state assignment probability. Please use  python get_summary_map_from_avg_matrix.py --help to see further details on how to run this script. 
+'''
 import pandas as pd 
 import numpy as np 
 import os
 import glob
 import helper
 import argparse
-parser = argparse.ArgumentParser(description = 'Output the summary chromatin state map for a group of samples, based on the output from file average_pred_results.py')
+parser = argparse.ArgumentParser(description = 'Given the summary chromatin state assignment matrix the CSREP/base_count calculates (outputted by average_pred_results.py), this code will output the summary chromatin state map for a group of samples. The output will be a bed-format file that can be readable in the ucsc genome browser (if the user sets the flag --igv-format to 1).')
 parser.add_argument('--avg_folder', type = str, required = True,
 	help = 'Where there are files showing the representative chroamtin state assignment matrices for different regions on the genome')
 parser.add_argument('--output_fn', type = str, required = True, 
 	help = 'output_fn')
-# parser.add_argument('--igv_format', action='store_true')
-# parser.set_defaults(igv_format=False)
-parser.add_argument('--igv_format', type=int, required = False, default = 1,
+parser.add_argument('--igv_format', type = int, choices = [0,1], required = False, default = 1,
 		help = '1 means that output summary chromatin state map will be written in a form that can be read into ucsc genome browser. 0 the the output summary chromatin state map will just be a normal bed file with columns: chrom, start, end, state (ex: E1 --> E18)') # had to set this to either 0 or 1 instead of being a boolean value right  away because then I can run this on my snakemake pipeline
 parser.add_argument('--igv_track_name', type=str, required=False,
 	default = 'csrep_summary',

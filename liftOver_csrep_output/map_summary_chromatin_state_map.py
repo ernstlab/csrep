@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+'''
+This script will convert the summary chromatin state maps from one assembly to another. Please use python map_summary_chrom_state_map.py --help to see full documentation for how to run the script.
+'''
 import pandas as pd 
 import numpy as np 
 import os

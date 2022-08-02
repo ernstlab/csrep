@@ -1,3 +1,17 @@
+#!/usr/bin/env python
+
+'''
+This code will take in (1) the input chromatin state maps from all input samples and (2) the bed-format file of genomic bins sampled as part of training data, then it will print out a file that combines the chromatin state maps for all input samples (either from one or from multiple potentially overlapping groups) at positions that are listed as training regions. 
+
+command-line argument: 
+python get_sample_genome_segmentation.py
+sample_bed_fn: where we save the coordinates of regions that we picked as the training regions
+segment_bed_fn: a biosample's segmentation data
+state_annot_fn: information about characteristics of states
+output_fn
+ct_name: the ct code that we will use as column name for the output dataframe
+'''
+
 import pandas as pd 
 import helper 
 import numpy as np 
@@ -13,6 +27,8 @@ def read_state_annot(state_annot_fn):
 	return state_annot_dict # keys: mnenomic, values: state index (1 based)
 
 def transform_state_into_desired_form(state, state_annot_dict):
+	if state == '.':
+		return state
 	try: 
 		int_state = int(state[1:]) # if it is in the form such as E1, E2, ... E18
 	except:
@@ -26,10 +42,10 @@ def transform_state_into_desired_form(state, state_annot_dict):
 
 def get_sample_genome_segmentaton(sample_bed_fn, segment_bed_fn, output_fn, state_annot_dict, ct_name):
 	sample_df = pd.read_csv(sample_bed_fn, header = None, sep = '\t', index_col = None)
-	sample_df = sample_df.sort_values([0,1])
+	sample_df = sample_df.sort_values([0,1]) # sort based on chromosome and start_bp
 	print('Done reading in sample_df')
 	segment_df = pd.read_csv(segment_bed_fn, header = None, sep = '\t', index_col = None)  # a df with columns chrom, start_bp, end_bp, state such that the df is already storted by chrom and start_bp, this is the assumption that the code will make
-	segment_df = segment_df.sort_values([0,1])
+	segment_df = segment_df.sort_values([0,1]) # sort based on chromosome and start_bp
 	print('Done reading in segment_df')
 	sample_b = bed.BedTool.from_dataframe(sample_df)
 	segment_b = bed.BedTool.from_dataframe(segment_df)

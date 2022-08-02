@@ -1,3 +1,7 @@
+#!/usr/bin/env python
+'''
+Given the summary chromatin state assignment probabilities outputted by CSREP/ base_count in one assembly, this approach will map the summary chromatin state maps to another assembly. Please use python map_state_assign_matrix.py --help to see full details on how to run this script.
+'''
 import pandas as pd 
 import numpy as np 
 import os

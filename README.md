@@ -38,8 +38,6 @@ If you run into any problems running CSREP or following the tutorial accompanyin
 
 # Installing CSREP
 ## Software requirement
-In order for CSREP to work, we need:
-- bedtools (https://bedtools.readthedocs.io/en/latest/content/installation.html)
 We create an environment that is compatible with our program, which you install as a conda environment: ```conda env create -f env/csrep_env.yml```
 
 ## Test data
@@ -48,7 +46,6 @@ To show you how CSREP can be run, we provided an example that include 18-chromat
 ## How to install CSREP
 - Clone this github repository
 - Replicate our conda environment: ```conda env create -f env/csrep_env.yml``` (Note: path to this file is relative to the current directory that contains this README file)
-- Install bedtools. 
 
 # Run CSREP 
 ## Snakemake 

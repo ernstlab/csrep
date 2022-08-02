@@ -1,3 +1,19 @@
+#!/usr/bin/env python
+
+'''
+This script will take in CSREP or base_count's summary chromatin state map (state assignment probabilities) for two groups of samples, and subtract group2's summary state maps from group1's (group1 - group2). The resulting output is a matrix showing the differential chromatin scores, rows: genomic bins, columns: states
+
+
+command-line arguments:
+python calculate_diff_rep_state_map.py
+group1_folder: where the representative state maps for group1 are stored. The files in this fodler correspond to different regions in the genome
+group2_folder: where the representative state maps for group2 are stored. The files in this fodler correspond to different regions in the genome
+output_folder: where the difference between the representative state maps of two groups are stored. The files in this folder correspon to different regions in the genome
+num_chromHMM_state
+redo_existing_file: 0 or 1: 1 (yes, rewrite all the existing files in the output_folder, or 0 (no, only write files that have not been produced)
+Output is a matrix, rows: genomic bins, columns: states
+'''
+
 import pandas as pd 
 import numpy as np 
 import sys
@@ -10,7 +26,7 @@ NUM_CORES = 4
 
 def read_rep_df(fn, num_chromHMM_state):
 	right_colnames = list(map(lambda x: 'state_' + str(x+1), range(num_chromHMM_state)))
-	print(fn)
+	helper.check_file_exist(fn)
 	try:
 		df = pd.read_csv(fn, header = 0, index_col = 0, sep = '\t')
 		assert list(df.columns) == right_colnames, 'index_col = 0 is wrong'

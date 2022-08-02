@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+'''
+If you have a file that is the output of a pipeline that finds 1-1 mappings of genomic bins from one assembly to another, the format of the file would be dest_chrom, dest_start, dest_end, org_bin. org_bin should take the form orgChrom_orgStart_orgEnd. Then, this code will output a reverse file of that, which means the output would have the columns org_chrom, org_start, org_end, destBin. destBin would be the form destChrom_destStart_destEnd
+Please use python convert_map_liftOver_to_orgAssembly.py --help for full details on how to run this script.
+'''
 import pandas as pd 
 import numpy as np 
 import os

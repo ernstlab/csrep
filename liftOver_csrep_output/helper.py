@@ -1,3 +1,23 @@
+#!/usr/bin/env python
+
+'''
+This file contains some useful functions for file-managements, reading input data, etc. that can be used by other scripts
+List of variables: 
+CHROMOSOME_LIST: 1--22, X --> For CSREP, we only gets summary chromatin state maps for chromosomes 1--> 22, X, because not all our input samples have Y chromosome. 
+NUM_BP_PER_BIN: 200 (bp)
+NUM_BIN_PER_WINDOW: 50,000 (windows, each of length NUM_BP_PER_BIN)
+NUM_BP_PER_WINDOW: NUM_BP_PER_BIN * NUM_BIN_PER_WINDOW
+
+List of functions:
+- make_dir(dir_path) --> create a directory (recursively) if it does not exist yet
+- check_file_exist(fn) --> if not, exit the program
+- create_folder_for_file(fn) --> usually used when fn is an output file path. This function will create the folder that contains the file fn
+- check_dir_exist(dir_path) --> if not, exit the program
+- get_command_line_integer(argument) --> try to convert to integer, if not succesfully then exit the program. This function is not entirely useful anymore given that we use argparse for all our scripts now. 
+- get_list_from_line_seperated_file(fn) --> read in a file such that each line is an item in a list, using pandas series
+- partition_file_list (file_list, num_cores) --> partition the file_list into a list of num_cores lists, as evely distributed as possible. Useful when we want to partition the list of outptu files into lists that can then be divided for different cores  to produce in parallel. 
+'''
+
 import string
 import os
 import sys

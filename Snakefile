@@ -34,6 +34,7 @@ def read_user_input(wildcards):
           results = list(map(lambda x: os.path.join(output_folder, x[0], x[1] + '_avg_pred.txt.gz'), fn_comb_list)) # x[0]: train_mode, x[1]: gene_reg
           return results
 
+
 rule all:
      input: 
           expand(os.path.join(all_ct_segment_folder, '{gene_reg}_combined_segment.bed.gz'), gene_reg = gene_reg_list), # calling rule get_all_ct_segment

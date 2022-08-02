@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+
+'''
+Given the file that shows the length of chromosomes, create a file with 4 columns chrom, start, end, chrom_start_end. The purpose of the output is to eventually find a 1-1 mapping of regions on hg19 to region on hg38, which we will eventually use to map data of summary chromatin state maps from hg19 to hg38. In other words, output from this file will be passed to liftOver software.
+Please use python create_bedFile_one_bin_per_row.py --help for full details on how to run this script.
+'''
 import pandas as pd 
 import numpy as np 
 import os

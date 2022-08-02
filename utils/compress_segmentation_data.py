@@ -1,3 +1,9 @@
+#!/usr/bin/env python
+'''
+This code takes in a segmentation file and reaarranges the rows such that if consecutive genomic bins are annotated as the same state, they will be combined. At the same time, the output file will be sorted by chrom, start_bp such that it will be readily available to use for downstream analysis with bedtools or pybedtools
+usage:
+python compress_segmentation_data.py --help for detailed argument requirements
+'''
 import pandas as pd 
 import helper 
 import numpy as np 

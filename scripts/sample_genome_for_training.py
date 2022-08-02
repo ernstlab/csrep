@@ -1,3 +1,17 @@
+#!/usr/bin/env python
+
+'''
+This script will take in the file specifying the length of chromosomes, and user-specified sample_fraction. It will then sample the corresponding fraction of the genome, which will be used as training regions for CSREP. The output of this file is a bed-format file: chrom, start, end --> training genomic bins. Each line will correspond to a 200-bp bin for which we will sample. 
+
+command-line arguments:
+python sample_genome.py
+chrom_length_fn: a bed file with 3 columns, no headers. Columns should correspond to: chromsoome (chr1, chr2, etc.), start_bp (0 in all chromsomes), end_bp (the length of the chromosome, which will be a multiple of 200 because it's the resolution of the chromatin state annotation)
+sample_fraction: the fraction of the genome that we want to sample. Remember fractions are not percentages.
+output_fn: where the data of sampled regions and state segementation will be stored for all the cell types that we chose
+seed: random seed, for reproducibility
+The result should give us around 1518140 200-bp bins
+'''
+
 # tested 02/25/2021
 import pandas as pd 
 import numpy as np 
@@ -19,7 +33,8 @@ def get_available_bin_indices_from_chrom_length_df(this_chrom_df):
 		print(len(result))
 	return result
 
-def sample_genome_positions(chrom_length_fn, sample_fraction, output_fn):
+def sample_genome_positions(chrom_length_fn, sample_fraction, output_fn, seed):
+	np.random.seed(seed) # set the random seed for reproducibility
 	chr_length_df = pd.read_table(chrom_length_fn, sep = '\t', header = None)
 	chr_length_df.columns = ['chrom', 'start_bp', 'end_bp'] # this file shows all the available segments in different chromosome that we can sample from.  
 	chr_length_df['length'] = chr_length_df['end_bp'] - chr_length_df['start_bp']
@@ -46,7 +61,7 @@ def sample_genome_positions(chrom_length_fn, sample_fraction, output_fn):
 
 
 def main():
-	if len(sys.argv) != 4:
+	if len(sys.argv) != 5:
 		usage()
 	chrom_length_fn = sys.argv[1]
 	helper.check_file_exist(chrom_length_fn)
@@ -58,10 +73,11 @@ def main():
 		usage()
 	assert sample_fraction > 0 and sample_fraction < 1.0, "sample_fraction should be greater than 0 and smaller than 1"
 	output_fn = sys.argv[3]
+	seed = helper.get_command_line_integer(sys.argv[4])
 	helper.create_folder_for_file(output_fn)
 	print ("Done getting command line arguments")
 	# select regions on the genome that we will sample from
-	genome_sample_df = sample_genome_positions(chrom_length_fn, sample_fraction, output_fn) # --> a dataframe of 3 columns: "chromosome", "start_bp", 'end_bp'
+	genome_sample_df = sample_genome_positions(chrom_length_fn, sample_fraction, output_fn, seed) # --> a dataframe of 3 columns: "chromosome", "start_bp", 'end_bp'
 
 	
 def usage():
@@ -69,6 +85,7 @@ def usage():
 	print ("chrom_length_fn: a bed file with 3 columns, no headers. Columns should correspond to: chromsoome (chr1, chr2, etc.), start_bp (0 in all chromsomes), end_bp (the length of the chromosome, which will be a multiple of 200 because it's the resolution of the chromatin state annotation)")
 	print ("sampling fraction: the fraction of the genome that we want to sample. Remember fractions are not percentages.")
 	print ("output_fn: where the data of sampled regions and state segementation will be stored for all the cell types that we chose")
+	print ('seed: random seed, for reproducibility')
 	print ("The result should give us around 1518140 200-bp bins")
 	exit(1)
 main()
