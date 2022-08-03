@@ -24,15 +24,14 @@ def read_user_input(wildcards):
      if is_calculate_diff_two_groups == 0: # only calculate the representative chromatin state maps for each group with cell_group_list
           avg_pred_fn_comb_list = list(product(cell_group_list, train_mode_list, gene_reg_list))
           results = list(map(lambda x: os.path.join(all_cg_out_dir, x[0], x[1], 'representative_data', 'average_predictions', x[2] + '_avg_pred.txt.gz'), avg_pred_fn_comb_list)) # x[0]: cell_group, x[1]: train_mode, x[2]: gene_reg, these files will be produced by rule average_pred_results_csrep
-          summ_fn_comb_list = list(product(cell_group_list, train_mode_list))
-          results += list(map(lambda x: os.path.join(all_cg_out_dir, x[0], x[1], 'representative_data', 'average_predictions', 'summary_state_track.bed.gz'), summ_fn_comb_list))
-          return results
      elif is_calculate_diff_two_groups == 1: # we calculate the differential chromatin state map between two groups, group1 minus group2
           assert len(cell_group_list) == 2, 'Number of cell groups provided in cell_group_list should be 2 in order for csrep to calculate the differential scores between the two groups'
           output_folder = os.path.join(all_cg_out_dir, cell_group_list[0] + '_minus_' + cell_group_list[1]) # group1 minus group2 when we calcualte the differential scores
           fn_comb_list = list(product(train_mode_list, gene_reg_list))
           results = list(map(lambda x: os.path.join(output_folder, x[0], x[1] + '_avg_pred.txt.gz'), fn_comb_list)) # x[0]: train_mode, x[1]: gene_reg
-          return results
+     summ_fn_comb_list = list(product(cell_group_list, train_mode_list))
+     results += list(map(lambda x: os.path.join(all_cg_out_dir, x[0], x[1], 'representative_data', 'average_predictions', 'summary_state_track.bed.gz'), summ_fn_comb_list))
+     return results
 
 rule all:
      input: 
