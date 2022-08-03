@@ -52,14 +52,7 @@ Next, we outline the output file structure of CSREP in ```testdata/csrep_output`
 
 # Step 0: Preparing some input
 ## Getting chromatin state maps for input samples
-For each input sample, users will first need to obtain the chromatin state map, saved in a file name with name format ```<sampleID><input_filename_suffix>``` and stored in ```raw_user_input_dir/<sampleID>```. For example, in ```./testdata/raw_data``` (corresponding to ```raw_user_input_dir``` variable in config), chromatin state map file for sample ```E003``` is ```E003/E003_chr22_core_K27ac_segments.bed.gz```. This file follows bed file format with the first four columns corresponding to chromosome, start, end, state. Example of the first 3 lines in this file: 
-
-```
-chr22   0       16052800        E18
-chr22   16052800        16053200        E13
-chr22   16053200        16054000        E12
-```
-We already prepared the chromatin state maps for input samples in this step inside ```./testdata/raw_data```. 
+For each input sample, users will first need to obtain the chromatin state map, saved in a file name with name format ```<sampleID><input_filename_suffix>``` and stored in ```raw_user_input_dir/<sampleID>```. For example, in ```./testdata/raw_data``` (corresponding to ```raw_user_input_dir``` variable in config), chromatin state map file for sample ```E003``` is ```E003/E003_chr22_core_K27ac_segments.bed.gz```. We already prepared the chromatin state maps for input samples in this step inside ```./testdata/raw_data```. 
 
 ## Getting data of chromosome length
 One input to the CSREP framework is a bed file that show the length of each chromosome. An example file is is as follows: 
