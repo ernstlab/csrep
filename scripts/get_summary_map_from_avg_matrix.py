@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-'''
-This code will create the file of summar chromatin state maps, based on the chromatin state assignment probabilities outputted by CSREP/ base_count. The state assigned at each genomic bin corresond to one with the highest summary chromatin state assignment probability. Please use  python get_summary_map_from_avg_matrix.py --help to see further details on how to run this script. 
-'''
 import pandas as pd 
 import numpy as np 
 import os

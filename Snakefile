@@ -1,4 +1,4 @@
-# Snakefile for baseline model in prediction pipeline
+# Snakefile for base_count model in prediction pipeline
 import pandas as pd
 import os 
 from itertools import product
@@ -10,7 +10,7 @@ raw_user_input_dir =  config['raw_user_input_dir']
 training_data_folder = config["training_data_folder"]
 all_ct_segment_folder = config["all_ct_segment_folder"]
 sample_genome_fn = config['sample_genome_fn']
-gene_reg_list = ['chr5_9']
+gene_reg_list = ['ch22_5']
 cell_group_list = config['cell_group_list']
 train_mode_list = config['train_mode_list']
 sample_fn_list = list(map(lambda x: os.path.join(raw_user_input_dir, x, 'sample.list'), cell_group_list))
@@ -103,7 +103,7 @@ rule average_pred_results_csrep:
  
 
 rule get_summary_state_track:
-     # in order to run this rule, the rule average_pred_results_csrep or create_pred_baseline_dir must run first
+     # in order to run this rule, the rule average_pred_results_csrep or create_pred_base_count_dir must run first
      input:
           expand(os.path.join('{{one_cg_out_dir}}', '{{train_mode}}', 'representative_data', 'average_predictions', '{gene_reg}_avg_pred.txt.gz'), gene_reg = gene_reg_list),
      output:
@@ -124,19 +124,19 @@ def get_training_data_one_group(wildcards):
      ct_train_fn_list = list(map(lambda x: os.path.join(training_data_folder, x + '_train_data.bed.gz'), ct_list))
      return ct_train_fn_list
 
-rule create_pred_baseline_dir:
+rule create_pred_base_count_dir:
      # no other rules need to finish first before this rule
      input: 
           get_training_data_one_group, # in order to get this, the rule get_sample_bedfile_one_sample has to be called for all the samples in this group
           expand(os.path.join(all_ct_segment_folder, '{gene_reg}_combined_segment.bed.gz'), gene_reg = gene_reg_list),
      params: 
           list_fn = os.path.join('{one_cg_out_dir}', 'sample.list'),
-          this_predict_outDir = os.path.join('{one_cg_out_dir}', 'baseline', 'representative_data', 'average_predictions')
+          this_predict_outDir = os.path.join('{one_cg_out_dir}', 'base_count', 'representative_data', 'average_predictions')
      output: 
-          (expand(os.path.join('{{one_cg_out_dir}}', 'baseline', 'representative_data', 'average_predictions', "{gene_reg}_avg_pred.txt.gz"), gene_reg = gene_reg_list))
+          (expand(os.path.join('{{one_cg_out_dir}}', 'base_count', 'representative_data', 'average_predictions', "{gene_reg}_avg_pred.txt.gz"), gene_reg = gene_reg_list))
      shell:
           """
-          python ./scripts/train_baseline_model.py {training_data_folder} {all_ct_segment_folder} {params.this_predict_outDir} {num_chromHMM_state} {params.list_fn}
+          python ./scripts/train_base_count_model.py {training_data_folder} {all_ct_segment_folder} {params.this_predict_outDir} {num_chromHMM_state} {params.list_fn}
           """
      
 

@@ -35,8 +35,8 @@ def transform_state_into_desired_form(state, state_annot_dict):
 		try:
 			int_state = state_annot_dict[state] # if not in the above from, it should be of the form that are consistent with the mneunomic
 		except:
-			print("state annotation is not in the right format: {}".format(state))
-			exit(1)
+			print("state annotation is not in the right format: {}. However, we will still keep them in the sample data file. If may cause the code of the training step (train_multiLog_auto1Hot.py) to crash. In training, we can only handle the case where either there are no state mapped (resulting in .) or multiple state maps (resulting in \'state,state\' format".format(state))
+			return state
 	return 'E' + str(int_state)
 
 
