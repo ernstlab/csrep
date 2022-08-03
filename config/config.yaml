@@ -8,7 +8,7 @@ training_data_folder: 'testdata/training_data'
 chrom_length_fn: 'testdata/roadmap_18state_chromlength.bed'
 sample_genome_fn: 'testdata/sample_genome.bed.gz'
 chromhmm_state_num: 18
-train_mode_list: ['CSREP', 'base_count'] # multi_logistic means CSREP, baseline means base_count as presented in the manuscripts
+train_mode_list: ['CSREP', 'base_count'] 
 cell_group_list: ['ESC', 'Brain']
 # the following parameters is to get the final summary chromatin state track
-is_igv_format: 1 # 1 means that output summary chromatin state map will be written in a form that can be read into ucsc genome browser. 0 the the output summary chromatin state map will just be a normal bed file with columns: chrom, start, end, state (ex: E1 --> E18) 
+is_igv_format: 1 # 1 means that output summary chromatin state map will be written in a form that can be read into ucsc genome browser. 0 the the output summary chromatin state map will just be a normal bed file with columns: chrom, start, end, state (ex: E1 --> E18)
