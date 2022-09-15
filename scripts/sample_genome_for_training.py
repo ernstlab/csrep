@@ -84,4 +84,6 @@ def usage():
 	print ('seed: random seed, for reproducibility')
 	print ("The result should give us around 1518140 200-bp bins")
 	exit(1)
-main()
+
+if __name__ == '__main__':
+	main()

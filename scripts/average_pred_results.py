@@ -95,32 +95,10 @@ def average_multiple_result_files(result_fn_list, output_fn, num_chromHMM_state)
 	# avg_df.to_csv(output_fn, compression = 'gzip', header = True, index = True, sep = '\t') # save and compression to file
 	# now we normalize the resulting average probabilities, such that the row sum is always 0 (i,e, the probabilities of state assignments sum up to 1 over all states in a position)
 	row_sum = avg_df.sum(axis = 1) # row sum, so that we can divide each entry in a row by the row sum corresponding to that row
-	row_norm_avg_df = avg_df.div(row_sum, axis = 0)
+	row_norm_avg_df = avg_df.div(row_sum, axis = 0) # Avg_df should already be row-normarlized, meaning the sum of values in each row is 1.0, but we still keep this code here
 	row_norm_avg_df.to_csv(output_fn, compression = 'gzip', header = True, index = False, sep = '\t') # save and compression to file
 	return
 
-def partition_file_list(file_list, num_cores):
-	"""
-	Given a list of output files, the function will divide into as-equally-distributed-as-possible lists of files. This partition of files will be used for parallelization of cores to speed up computing 
-	Args:
-	    file_list: list of filenames that we want to split. 
-	    num_cores: number of groups that we will split the file_list into
-
-	Returns:
-		list of num_cores lists of files --> partitions of file_list into as-equally-distributed-as-possible lists of files
-		
-	Raises:
-	    KeyError: Raises an exception: No exceptions. 
-	"""
-	results = [] # list of lists of file names
-	num_files_per_core = int(len(file_list) / num_cores)
-	for core_i in range(num_cores):
-		if core_i < (num_cores - 1):
-			this_core_files = file_list[core_i * num_files_per_core : (core_i + 1) * num_files_per_core]
-		elif core_i == (num_cores - 1):
-			this_core_files = file_list[core_i * num_files_per_core :]
-		results.append(this_core_files)
-	return results
 
 def averaging_prediction_one_process(gen_pos_list, outDir, pred_dir_list, num_chromHMM_state):
 	"""
@@ -169,7 +147,7 @@ def averaging_predictions_all_processes(outDir, all_ct_pred_folder, ct_list, gen
 	assert set(pred_ct_list) == set(ct_list), 'pred_ct_list is not the same as ct_list'
 	# get the folder where the results of averaging across different prediction cell types will be stored
 	num_cores = 4
-	partition_genome_pos_list = partition_file_list(gen_pos_list, num_cores)
+	partition_genome_pos_list = helper.partition_file_list(gen_pos_list, num_cores)
 	print(("Outputting average predictions here: " + outDir))
 	processes = [mp.Process(target = averaging_prediction_one_process, args = (partition_genome_pos_list[i], outDir, pred_dir_list, num_chromHMM_state)) for i in range(num_cores)]
 	for p in processes:
@@ -196,7 +174,7 @@ def main():
 	# get the list of all genomic positions used to segment the genome for our model training (we exclude chromosome Y in all analysis). This will only look at chrom X, deciding whether we want to rewrite some of the existing file
 	gen_pos_list = get_genomic_positions_list(all_ct_segment_folder, outDir, replace_existing_file)
 	# get all cell types
-	ct_list =  list(pd.read_csv(all_ct_list_fn, sep = '\n', header = None)[0]) # -->  a list with each entry being the cell type in this cell group
+	ct_list = list(pd.read_csv(all_ct_list_fn, sep = '\n', header = None)[0]) # -->  a list with each entry being the cell type in this cell group
 	# call all cell types
 	print ("Averaging pred results")
 	averaging_predictions_all_processes(outDir, all_ct_pred_folder, ct_list, gen_pos_list, num_chromHMM_state)
@@ -212,4 +190,5 @@ def usage():
 	print('num_chromHMM_state')
 	exit(1)
 
-main()
+if __name__ == '__main__':
+	main()

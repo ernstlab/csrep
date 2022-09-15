@@ -117,4 +117,5 @@ def usage():
 	print ("This code will calculate the difference of chromatin state assignment probabilities between two groups. The two groups should already had their representative chromatin state maps being calcualted. Output is a matrix, rows: genomic bins, columns: states")
 	exit(1)
 
-main()
+if __name__ == '__main__':
+	main()

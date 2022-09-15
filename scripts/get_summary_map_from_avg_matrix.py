@@ -18,19 +18,6 @@ parser.add_argument('--igv_track_name', type=str, required=False,
 parser.add_argument('--state_annot_fn', type = str, required = False,
 	default = 'test_data/state_annotation.txt',
 	help = 'If you dont provide the state_annot_fn, we will use the default which is test_data/state_annotation.txt, which is from roadmap\'s 18-state annotation. If your annotation is not from the same model, please provide this parameter otherwise the code will stop without producing output.')
-args = parser.parse_args()
-print(args)
-helper.check_dir_exist(args.avg_folder)
-helper.create_folder_for_file(args.output_fn)
-helper.check_file_exist(args.state_annot_fn)
-igv_format = True
-if (args.igv_format == 1):
-	igv_format = True
-elif args.igv_format == 0:
-	igv_format = False
-else: 
-	print ('igv_format needs to be 0 or 1')
-	exit(1)
 
 
 def read_state_annot_fn(state_annotation_fn):
@@ -111,5 +98,18 @@ def create_igv_format_bed(avg_folder, state_annot_fn, output_fn, igv_format, igv
 	print('Done!')
 	return 
 
-
-create_igv_format_bed(args.avg_folder, args.state_annot_fn, args.output_fn, igv_format, args.igv_track_name)
+if __name__ == '__main__':
+	args = parser.parse_args()
+	print(args)
+	helper.check_dir_exist(args.avg_folder)
+	helper.create_folder_for_file(args.output_fn)
+	helper.check_file_exist(args.state_annot_fn)
+	igv_format = True
+	if (args.igv_format == 1):
+		igv_format = True
+	elif args.igv_format == 0:
+		igv_format = False
+	else:
+		print('igv_format needs to be 0 or 1')
+		exit(1)
+	create_igv_format_bed(args.avg_folder, args.state_annot_fn, args.output_fn, igv_format, args.igv_track_name)

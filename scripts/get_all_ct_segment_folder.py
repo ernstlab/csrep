@@ -140,4 +140,6 @@ def usage():
 	print ('state_annot_fn: the annotation of states (state names, state index, etc.)')
 	print ('redo_existing_files: 0 or 1: 1 (yes, rewrite all the existing files in the output_folder, or 0 (no, only write files that have not been produced)')
 	exit(1)
-main()
+
+if __name__ == '__main__':
+	main()

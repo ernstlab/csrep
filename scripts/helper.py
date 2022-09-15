@@ -17,10 +17,9 @@ List of functions:
 - get_list_from_line_seperated_file(fn) --> read in a file such that each line is an item in a list, using pandas series
 - partition_file_list (file_list, num_cores) --> partition the file_list into a list of num_cores lists, as evely distributed as possible. Useful when we want to partition the list of outptu files into lists that can then be divided for different cores  to produce in parallel. 
 '''
-import string
 import os
-import sys
-import pandas as pd 
+import numpy as np
+import pandas as pd
 
 CHROMOSOME_LIST = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', 'X'] # we exclude chromosome Y because it's not available in all cell types
 
@@ -69,7 +68,14 @@ def get_list_from_line_seperated_file(fn):
 
 def partition_file_list(file_list, num_cores):
 	results = [] # list of lists of file names
-	num_files_per_core = int(len(file_list) / num_cores)
+	num_files_per_core = int(np.around(len(file_list) / num_cores)) # round to the nearest decimal point, either up or down
+	if num_files_per_core == 0:
+		for file in file_list:
+			results.append([file])
+		for core_i in range(len(file_list), num_cores):
+			results.append([])
+		return results
+	# else, the number of files per core is greater than 0, meaning only
 	for core_i in range(num_cores):
 		if core_i < (num_cores - 1):
 			this_core_files = file_list[core_i * num_files_per_core : (core_i + 1) * num_files_per_core]

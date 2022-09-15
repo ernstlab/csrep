@@ -207,4 +207,5 @@ def usage():
 	print ('seed: random seed for reproducibility')
 	exit(1)
 
-main()
+if __name__ == '__main__':
+	main()

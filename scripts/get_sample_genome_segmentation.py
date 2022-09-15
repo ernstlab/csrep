@@ -81,4 +81,5 @@ def usage():
 	print('ct_name: the ct code that we will use as column name for the output dataframe')
 	exit(1)
 
-main()
+if __name__ == '__main__':
+	main()

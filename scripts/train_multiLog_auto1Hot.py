@@ -115,16 +115,6 @@ def one_job_run_predict_segmentation(segment_fn_list, output_fn_list, train_cell
 		predict_segmentation_one_genomic_window(segment_fn, output_fn, train_cell_types, response_ct, num_chromHMM_state, regression_machine)
 	return 
 
-def partition_file_list(file_list, num_cores):
-	results = [] # list of lists of file names
-	num_files_per_core = int(len(file_list) / num_cores)
-	for core_i in range(num_cores):
-		if core_i < (num_cores - 1):
-			this_core_files = file_list[core_i * num_files_per_core : (core_i + 1) * num_files_per_core]
-		elif core_i == (num_cores - 1):
-			this_core_files = file_list[core_i * num_files_per_core :]
-		results.append(this_core_files)
-	return results
 
 def find_uncalculated_gene_regions(predict_outDir, all_ct_segment_folder, replace_existing_files):
 	"""
@@ -149,8 +139,8 @@ def predict_segmentation (all_ct_segment_folder, regression_machine, predict_out
 	# 2. partition the list of file names into groups, for later putting into jobs for multiple processes
 	one_job_run_predict_segmentation(segment_fn_list, output_fn_list, train_cell_types, response_ct, num_chromHMM_state, regression_machine)
 	# num_cores = 4
-	# partition_segment_fn_list = partition_file_list(segment_fn_list, num_cores) # [process_index][file_index]
-	# partition_output_fn_list = partition_file_list(output_fn_list, num_cores)
+	# partition_segment_fn_list = helper.partition_file_list(segment_fn_list, num_cores) # [process_index][file_index]
+	# partition_output_fn_list = helper.partition_file_list(output_fn_list, num_cores)
 	# processes = [mp.Process(target = one_job_run_predict_segmentation, args = (partition_segment_fn_list[i], partition_output_fn_list[i], train_cell_types, response_ct, num_chromHMM_state, regression_machine)) for i in range(num_cores)]
 	# for p in processes:
 	# 	p.start()
@@ -219,4 +209,5 @@ def usage():
 	print ('seed: random seed for reproducibility')
 	exit(1)
 
-main()
+if __name__ == '__main__':
+	main()

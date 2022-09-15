@@ -9,26 +9,27 @@ Below is the file structure of this download folder
 |__|__|__ hg19
 |__|__|__|__ summary_state_track.bed.gz: This file shows the summary chromatin state map for the group. The file is designed such that it had a header that can be read into UCSC genome browser
 |__|__|__|__ state_assign_matrix: inside this folder, you will see the data of probabilistic estimates of state assignments for each genomic position in the genome. There are 316 files, each  corresponding to a window of 10Mb (or less, if the file belongs to the end of a chromosome). A file chr1_0_avg_pred.txt.gz represents region chr1: 0: 9,999,999 bp. File chr5_15_avg_pred.txt.gz represents region chr5: 150Mp- 150Mb+9,999,999bp. Each line in the file represents a 200-bp window in the genome. If it's too confusing, just have a look at the file and you will figure out. 
+|__|__|__|__ ucsc_tracks: inside this folder, we stored the bigwig and bigbed files used for visualizing the summary state maps resulted from CSREP on UCSC Genome Browser
 |__|__|__ hg38
 |__|__|__|__ summary_state_track.bed.gz: This file is lifted-over from the corresponding output in hg19
 |__|__|__|__ state_assign_matrix: inside this folder, you will see 23 files corresponding to 23 chromosomes (1-22,X, we do not calculate output for chrY). Data here is actually lifted over from the CSREP's output in hg19. Implementations and details about how we get CSREP output by lifting over the output from another assembly can be found at <hahahaha fill in>  
+|__|__|__|__ ucsc_tracks: inside this folder, we stored the bigwig and bigbed files used for visualizing the summary state maps resulted from CSREP on UCSC Genome Browser
 |__ epimap
 |__|__ <cell_group>
 |__|__|__ hg19
 |__|__|__|__ summary_state_track.bed.gz: Same structure as in Roadmap (mentioned above)
 |__|__|__|__ state_assign_matrix: Same structure as in Roadmap (mentioned above)
-|__|__|__ hg38: Unlike in Roadmap (which lifted over CSREP output data from hg19), here, we calculated CSREP output from the raw data downloaded from Epimap portal
+|__|__|__|__ ucsc_tracks: Same structure as in Roadmap (mentioned above)
+|__|__|__ hg38: 
 |__|__|__|__ summary_state_track.bed.gz: Same structure as in Roadmap (mentioned above)
 |__|__|__|__ state_assign_matrix: Same structure as in Roadmap (mentioned above)
+|__|__|__|__ ucsc_tracks: Same structure as in Roadmap (mentioned above)
 
 ```
 
 ## Viewing summary chromatin state maps on USCS Genome Browser
-Users can easily view the provided summary chromatin state maps for cell groups in Roadmap and Epimap on USCS Genome Browser. To do so:
-- Get onto the genome browser with the desired configuration (reference genome assembly, etc.).
-- Click 'Add custom tracks'.
-- Copy and paste the links to individual data files from our <a href="https://public.hoffman2.idre.ucla.edu/ernst/2K9RS/csrep/">download link</a> that users want to view. 
-- Submit and Go.
+Users can easily view the provided summary chromatin state maps (state assignment probabilities and state annotations) for cell groups in Roadmap and Epimap on USCS Genome Browser, using the link to the track hub: https://public.hoffman2.idre.ucla.edu/ernst/2K9RS//csrep/hub.txt
+
 
 ## Other data
 For any other data related to the paper, please email Prof. Jason Ernst or grad student Ha Vu. 
