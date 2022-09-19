@@ -4,6 +4,7 @@ channels:
   - bioconda
   - defaults
 dependencies:
+  - snakemake
   - numpy
   - pandas
   - scipy
