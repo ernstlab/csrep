@@ -4,10 +4,8 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - numpy=1.18
-  - pandas=1.0.*
-  - pyyaml=5.3.1
-  - yaml=0.2.5
-  - scipy=1.5.*
+  - numpy
+  - pandas
+  - scipy
   - pybedtools
   - scikit-learn
