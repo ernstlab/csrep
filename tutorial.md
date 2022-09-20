@@ -88,8 +88,9 @@ Note: We want the length of the chromosome is a multiple of 200, which is the re
 ```
 For our example, you can run: 
 ```
-./utils/get_chrom_length_from_segmentation.sh ./testdata/raw_data/E072_chr22_core_K27ac_segments.bed.gz ./testdata/roadmap_18state_chromlength.bed ./utils/chrom.human
+./utils/get_chrom_length_from_segmentation.sh ./testdata/raw_data/E072/E072_chr22_core_K27ac_segments.bed.gz ./testdata/roadmap_18state_chromlength.bed ./utils/chrom.human
 ```
+This will produce an output file where the length of chromosomes that are not chr22 are all left blank. The reason is because the provided input data, for tutorial purposes, only contains segmentation data in chr22. All the downstream tasks that take in this file as input will not be affected.
 
 ## Prepare the list of samples for each group
 Inside ```./testdata/raw_data```, there are 12 segmentation files in the form ```<sampleID><input_filename_suffix>```, for example: 
