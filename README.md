@@ -30,6 +30,7 @@ Below is the file structure of this download folder
 ## Viewing summary chromatin state maps on USCS Genome Browser
 Users can easily view the provided summary chromatin state maps (state assignment probabilities and state annotations) for cell groups in Roadmap and Epimap on USCS Genome Browser, using the link to the track hub: https://public.hoffman2.idre.ucla.edu/ernst/2K9RS//csrep/hub.txt
 
+The detailed instructions on how to view the data of your interests on UCSC genome browser in 
 
 ## Other data
 For any other data related to the paper, please email Prof. Jason Ernst or grad student Ha Vu. 
