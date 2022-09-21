@@ -22,6 +22,7 @@ parser.add_argument('--state_annot_fn', type = str, required = False,
 
 def read_state_annot_fn(state_annotation_fn):
 	df = pd.read_csv(state_annotation_fn, header = 0, sep = '\t')
+	df ['state_name'] = df['state'].astype(str) + '_' + df['mnenomic'] # 1_TssA , this line has to be before the next line
 	df['state'] = list(map(lambda x: 'E' + str(x), df['state']))
 	return df
 
@@ -35,15 +36,16 @@ def get_rgb_format_right(rgb):
 def get_standard_ucsc_format_bed_file(segment_df, state_annot_df, output_fn, igv_track_name):
 	segment_df = pd.merge(segment_df, state_annot_df
 		, how = 'left', left_on = 'state', right_on = 'state', left_index = False, right_index = False)
-	segment_df = segment_df [['chrom', 'start_bp', 'end_bp', 'state', 'itemRgb']]
+	segment_df = segment_df [['chrom', 'start_bp', 'end_bp', 'state_name', 'itemRgb']] # get mnenomic so that we get the actual state name
 	(nrow, ncol) = segment_df.shape
 	segment_df['itemRgb'] = (segment_df['itemRgb']).apply(get_rgb_format_right)
 	segment_df['score'] = ['1'] * nrow
 	segment_df ['strand'] = ['.'] * nrow
 	segment_df['thickStart'] = segment_df['start_bp']
 	segment_df['thickEnd'] = segment_df['start_bp']
-	segment_df = segment_df.rename(columns = {'start_bp' : 'chromStart', 'end_bp' : 'chromEnd', 'state' : 'name'})
+	segment_df = segment_df.rename(columns = {'start_bp' : 'chromStart', 'end_bp' : 'chromEnd', 'state_name' : 'name'})
 	segment_df = segment_df[['chrom', 'chromStart', 'chromEnd', 'name', 'score', 'strand', 'thickStart', 'thickEnd', 'itemRgb']]
+	helper.remove_file(output_fn) # so that we can write a new file
 	outF = open(output_fn, 'a')
 	header_comment = "track name=\"" + igv_track_name + "_" + "\" description=\"\" visibility=1 itemRgb=\"On\"\n"
 	outF.write(header_comment) # write the comment first so that genome browser can read the file
@@ -113,3 +115,4 @@ if __name__ == '__main__':
 		print('igv_format needs to be 0 or 1')
 		exit(1)
 	create_igv_format_bed(args.avg_folder, args.state_annot_fn, args.output_fn, igv_format, args.igv_track_name)
+

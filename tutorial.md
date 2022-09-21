@@ -107,9 +107,9 @@ Users will modify the ```config/config.yml``` file to adjust parameters to run C
 We recommend just running snakemake using parameters that we currently sets in the config file for the example from ```testdata``` folder first. Then, the tutorial will be much easier to understand. 
  
 # Step 2: Running CSREP using Snakemake 
-- Please make sure that all the installation requirements are met. We recommend create a new conda environment for CSREP (refer to **Installing CSREP** section from ```README.md```)
+- Please make sure that all the installation requirements are met. We recommend create a new conda environment for CSREP (refer to **Installing CSREP** section from ```README.md```, and also refer to our <a href="https://github.com/ernstlab/csrep/blob/master/csrep_tutorial_report.pptx">tutorial report</a> if needed.)
 - If you run this tutorial using your personal computer, you can run ```snakemake``` on the command line from the current working directory, which contains file ```Snakefile```.
-- If you have the computing capacity of computer clusters/cloud computing, you can run ```snakemake -j 100 --cluster "qsub -V -l h_rt=4:00:00,h_data=2G"``` on the command line. Snakemake will submit jobs in parallel whenever possible, and manage your jobs. The joblog and terminal output files from each job will be saved in the home directory in your system.
+- If you have the computing capacity of computer clusters/cloud computing, you can run ```snakemake -j 100 --cluster "qsub -V -l h_rt=4:00:00,h_data=2G -o <path/to/log/folder> -e <path/to/log/folder>"``` on the command line. Snakemake will submit jobs in parallel whenever possible, and manage your jobs. The joblog and terminal output files from each job will be saved in the folder ```<path/to/log/folder>``` that you specify based on your local file paths. 
 
 
 
