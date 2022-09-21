@@ -121,41 +121,41 @@ def predict_segmentation (all_ct_segment_folder, predict_outDir, train_cell_type
         print("Process " + str(i) + " is finished!")
 
 def main():
-    num_mandatory_args = 6
-    if len(sys.argv) != num_mandatory_args:
-        usage()
-    print("training baseline model")
-    train_data_folder = sys.argv[1]
-    helper.check_dir_exist(train_data_folder)
-    all_ct_segment_folder = sys.argv[2]
-    helper.check_dir_exist(all_ct_segment_folder)
-    predict_outDir = sys.argv[3]
-    helper.make_dir(predict_outDir)
-    try:
-        num_chromHMM_state = int(sys.argv[4])
-        assert num_chromHMM_state > 0, "num_chromHMM_state needs to be positive"
-    except:
-        print("num_chromHMM_state or num_train_ct is not valid")
-        usage()
-    # remove the response ct from all_ct list
-    all_ct_fn = sys.argv[5]
-    print("Done getting command line arguments train_baseline_model.py")
-    all_ct = [line.strip() for line in open(all_ct_fn, "r").readlines()]
-    # 1. Get the data of predictors and response for training
-    train_mode = 'baseline'
-    # 2. no need to train model
-    # 3. process training data and predict segmentation at each position
-    predict_segmentation (all_ct_segment_folder, predict_outDir, all_ct, num_chromHMM_state, train_mode)
-    print("Done predicting whole genome")
+	num_mandatory_args = 6
+	if len(sys.argv) != num_mandatory_args:
+		usage()
+	print("training baseline model")
+	train_data_folder = sys.argv[1]
+	helper.check_dir_exist(train_data_folder)
+	all_ct_segment_folder = sys.argv[2]
+	helper.check_dir_exist(all_ct_segment_folder)
+	predict_outDir = sys.argv[3]
+	helper.make_dir(predict_outDir)
+	try:
+		num_chromHMM_state = int(sys.argv[4])
+		assert num_chromHMM_state > 0, "num_chromHMM_state needs to be positive"
+	except:
+		print("num_chromHMM_state or num_train_ct is not valid")
+		usage()
+	# remove the response ct from all_ct list
+	all_ct_fn = sys.argv[5]
+	print("Done getting command line arguments train_baseline_model.py")
+	all_ct = [line.strip() for line in open(all_ct_fn, "r").readlines()]
+	# 1. Get the data of predictors and response for training
+	train_mode = 'baseline'
+	# 2. no need to train model
+	# 3. process training data and predict segmentation at each position
+	predict_segmentation (all_ct_segment_folder, predict_outDir, all_ct, num_chromHMM_state, train_mode)
+	print("Done predicting whole genome")
 
 def usage():
-    print("python train_baseline_model.py")
-    print("train_data_folder: where the state assignment and of training data are stored for all cell types. Each cell type has its own file")
-    print("all_ct_segment_folder: where segmentation data of all cell types are stored, for the entire genome, so that we can get data for prediction out.")
-    print("predict_outDir: where the beta values obtained from training the data will be stored (e.g. pred_E###)")
-    print("num_chromHMM_state: Number of chromHMM states that are shared across different cell types")
-    print("all_ct_fn: filename of all ct being used in the model to get the baseline representative cell types")
-    exit(1)
+	print("python train_baseline_model.py")
+	print("train_data_folder: where the state assignment and of training data are stored for all cell types. Each cell type has its own file")
+	print("all_ct_segment_folder: where segmentation data of all cell types are stored, for the entire genome, so that we can get data for prediction out.")
+	print("predict_outDir: where the beta values obtained from training the data will be stored (e.g. pred_E###)")
+	print("num_chromHMM_state: Number of chromHMM states that are shared across different cell types")
+	print("all_ct_fn: filename of all ct being used in the model to get the baseline representative cell types")
+	exit(1)
 
 if __name__ == '__main__':
     main()

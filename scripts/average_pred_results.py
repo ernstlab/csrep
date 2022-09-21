@@ -95,7 +95,7 @@ def average_multiple_result_files(result_fn_list, output_fn, num_chromHMM_state)
 	# avg_df.to_csv(output_fn, compression = 'gzip', header = True, index = True, sep = '\t') # save and compression to file
 	# now we normalize the resulting average probabilities, such that the row sum is always 0 (i,e, the probabilities of state assignments sum up to 1 over all states in a position)
 	row_sum = avg_df.sum(axis = 1) # row sum, so that we can divide each entry in a row by the row sum corresponding to that row
-	row_norm_avg_df = avg_df.div(row_sum, axis = 0) # Avg_df should already be row-normarlized, meaning the sum of values in each row is 1.0, but we still keep this code here
+	row_norm_avg_df = avg_df.div(row_sum, axis = 0)
 	row_norm_avg_df.to_csv(output_fn, compression = 'gzip', header = True, index = False, sep = '\t') # save and compression to file
 	return
 
@@ -174,7 +174,7 @@ def main():
 	# get the list of all genomic positions used to segment the genome for our model training (we exclude chromosome Y in all analysis). This will only look at chrom X, deciding whether we want to rewrite some of the existing file
 	gen_pos_list = get_genomic_positions_list(all_ct_segment_folder, outDir, replace_existing_file)
 	# get all cell types
-	ct_list = list(pd.read_csv(all_ct_list_fn, sep = '\n', header = None)[0]) # -->  a list with each entry being the cell type in this cell group
+	ct_list =  list(pd.read_csv(all_ct_list_fn, sep = '\n', header = None)[0]) # -->  a list with each entry being the cell type in this cell group
 	# call all cell types
 	print ("Averaging pred results")
 	averaging_predictions_all_processes(outDir, all_ct_pred_folder, ct_list, gen_pos_list, num_chromHMM_state)

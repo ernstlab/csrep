@@ -115,7 +115,6 @@ def one_job_run_predict_segmentation(segment_fn_list, output_fn_list, train_cell
 		predict_segmentation_one_genomic_window(segment_fn, output_fn, train_cell_types, response_ct, num_chromHMM_state, regression_machine)
 	return 
 
-
 def find_uncalculated_gene_regions(predict_outDir, all_ct_segment_folder, replace_existing_files):
 	"""
 	predict_outDir: the output folder where output files <gene_region>_pred_out.txt.gz are stored
