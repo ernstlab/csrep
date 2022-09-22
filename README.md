@@ -95,8 +95,9 @@ Parameters in ```config/config.yaml``` include:
 - ```train_mode_list```: the list of training mode that you would like results for. ```multi_logistic``` for CSREP and ```baseline``` for base_count, as presented in the paper. 
 - ```cell_group_list```: the list of group names of groups of samples in that we would like to calculate the representative/differential chromatin state maps for. If ```is_calculate_diff_two_groups``` is set to 1 (meaning you want to calculate differential chromatin scores), then ```cell_group_list``` should specify two group names, otherwise the program may inform you of an error.
 
+
 # Tutorial
-Please see this <a href="https://github.com/ernstlab/csrep/blob/master/tutorial.md">link</a>. If the info in section 'How to run CSREP' confuse you, you can try following our tutorial, it will make things a lot easier to understand.
+Please see this <a href="https://github.com/ernstlab/csrep/blob/master/tutorial.md">link</a>. If the info in section 'How to run CSREP' confuse you, you can try following our tutorial, it will make things a lot easier to understand. The tutorial will also have detailed commands to run snakemake for our test data, and instructions on what to do in case snakemake encounters errors.
 
 # liftOver results to another assembly
 Given the output of summary/differential chromatin state maps from CSREP in one assembly, you can liftOver such results into another assembly. We provide source code and detailed readme of a separate pipeline for this. The pipeline is designed such that we will first lift the segmentation one bin at at time, and then eradicate regions in the destination assembly that get mapped from multiple regions in the original assembly. We used this pipeline to create the summary chromatin state maps for 11 cell groups from Roadmap from hg19 (produced by CSRE) to hg38. The pipeline can be found <a href="https://github.com/ernstlab/csrep/tree/master/liftOver_csrep_output">here</a>. The accompanying readme/tutorial is <a href="https://github.com/ernstlab/csrep/blob/master/liftOver_csrep_output/README.md">here</a>
