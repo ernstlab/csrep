@@ -26,6 +26,7 @@ Below is the file structure of this download folder
 |__|__|__|__ ucsc_tracks: Same structure as in Roadmap (mentioned above)
 
 ```
+Note: the details about input samples (from Roadmap and Epimap) within each sample group, along with download links for input data, are available in Additional File 2 in the manuscript. Details about each group's associated cell/tissue types are also available in Additional File 2. 
 
 ## Viewing summary chromatin state maps on USCS Genome Browser
 Users can easily view the provided summary chromatin state maps (state assignment probabilities and state annotations) for cell groups in Roadmap and Epimap on USCS Genome Browser, using the link to the track hub: https://public.hoffman2.idre.ucla.edu/ernst/2K9RS//csrep/hub.txt
