@@ -71,8 +71,8 @@ def get_genomic_positions_list(group1_folder, output_folder, redo_existing_file)
 def get_diff_rep_state_whole_genome(group1_folder, group2_folder, output_folder, num_chromHMM_state, redo_existing_file):
 	# this function will:
 	# 1. get list of regions(files) inside folder diff_folder, partition into NUM_CORES processes
-	g1_fn_list = os.listdir(group1_folder)
-	g2_fn_list = os.listdir(group2_folder)
+	g1_fn_list = glob.glob(group1_folder + "/chr*_avg_pred.txt.gz") 
+	g2_fn_list = glob.glob(group1_folder + "/chr*_avg_pred.txt.gz") 
 	print(len(g1_fn_list))
 	print(len(g2_fn_list))
 	assert len(g1_fn_list) == len(g2_fn_list), 'Number of files from group 1 and group 2 are not equal'
@@ -116,6 +116,6 @@ def usage():
 	print ('redo_existing_file: 0 or 1: 1 (yes, rewrite all the existing files in the output_folder, or 0 (no, only write files that have not been produced)')
 	print ("This code will calculate the difference of chromatin state assignment probabilities between two groups. The two groups should already had their representative chromatin state maps being calcualted. Output is a matrix, rows: genomic bins, columns: states")
 	exit(1)
-
+	
 if __name__ == '__main__':
 	main()
