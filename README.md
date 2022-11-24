@@ -1,4 +1,4 @@
-Hello! Wecome to CSREP- a method that probabilisitcally estimate the chromatin state annotation for a group of related samples. A direct application of CSREP is to calculate the differential chromatin state mappings between two groups with multiple samples. Our manuscript will be made public shortly. 
+Hello! Wecome to CSREP- a method that probabilisitcally estimate the chromatin state annotation for a group of related samples ( <a href="https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btac722/6808617">Manuscript</a>). A direct application of CSREP is to calculate the differential chromatin state mappings between two groups with multiple samples. Our manuscript will be made public shortly. 
 # Data Availability
 ## CSREP scores for cell groups from ROADMAP
 The data of summary chromatin state maps outputted by CSREP for all cell groups in ROADMAP and Epimap is available at https://public.hoffman2.idre.ucla.edu/ernst/2K9RS/csrep/
@@ -26,7 +26,7 @@ Below is the file structure of this download folder
 |__|__|__|__ ucsc_tracks: Same structure as in Roadmap (mentioned above)
 
 ```
-Note: the details about input samples (from Roadmap and Epimap) within each sample group, along with download links for input data, are available in Additional File 2 in the manuscript. Details about each group's associated cell/tissue types are also available in Additional File 2. 
+Note: the details about input samples (from Roadmap and Epimap) within each sample group, along with download links for input data, are available in Additional File 2 in the <a href="https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btac722/6808617">manuscript</a>. Details about each group's associated cell/tissue types are also available in Additional File 2 of the <a href="https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btac722/6808617">manuscript</a>. 
 
 ## Viewing summary chromatin state maps on USCS Genome Browser
 Users can easily view the provided summary chromatin state maps (state assignment probabilities and state annotations) for cell groups in Roadmap and Epimap on USCS Genome Browser, using the link to the track hub: https://public.hoffman2.idre.ucla.edu/ernst/2K9RS//csrep/hub.txt
