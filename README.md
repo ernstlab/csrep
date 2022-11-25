@@ -3,7 +3,7 @@ Hello! Welcome to CSREP- a method that probabilistically estimates the chromatin
 
 The CSREP method is described in:
 
-Vu H, Koch Z, Fiziev P, Ernst J. <a href="https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btac722/6808617">A framework for group-wise summarization and comparison of chromatin state annotations</a>. Bioinformatics, advanced online publication. 
+Vu H, Koch Z, Fiziev P, Ernst J. <a href="https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btac722/6808617">A framework for group-wise summarization and comparison of chromatin state annotations</a>. <i>Bioinformatics</i>, advanced online publication. 
 
 # Data Availability
 ## CSREP scores for cell groups from ROADMAP
