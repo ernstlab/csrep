@@ -1,5 +1,9 @@
 
-Hello! Welcome to CSREP- a method that probabilistically estimates the chromatin state annotation for a group of related samples ( <a href="https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btac722/6808617">Manuscript</a>). A direct application of CSREP is to calculate the differential chromatin state mappings between two groups with multiple samples. 
+Hello! Welcome to CSREP- a method that probabilistically estimates the chromatin state annotation for a group of related samples. A direct application of CSREP is to calculate the differential chromatin state mappings between two groups with multiple samples. 
+
+The CSREP method is described in:
+
+Vu H, Koch Z, Fiziev P, Ernst J. <a href="https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btac722/6808617">A framework for group-wise summarization and comparison of chromatin state annotations</a>. Bioinformatics, advanced online publication. 
 
 # Data Availability
 ## CSREP scores for cell groups from ROADMAP
