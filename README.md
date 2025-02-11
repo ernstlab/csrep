@@ -8,7 +8,9 @@ Vu H, Koch Z, Fiziev P, Ernst J. <a href="https://academic.oup.com/bioinformatic
 # Data Availability
 ## CSREP scores for cell groups from ROADMAP
 The data of summary chromatin state maps outputted by CSREP for all cell groups in ROADMAP and Epimap is available at https://public.hoffman2.idre.ucla.edu/ernst/2K9RS/csrep/
-Below is the file structure of this download folder
+Below is the file structure of this download folder. 
+
+**NOTE**: As of <date>, we have update the files ```summary_state_track.bed.gz``` for all cell groups from roadmap and EPIMAP to fix a previous **bug** that may have caused the state 1_TssA to not be present in the final summary state tracks. **No results in the original papers were affected**. These errors were present in the files ```summary_state_track.bed.gz``` from around 03/2023 until 12/15/2024. 
 ```
 |__ roadmap
 |__|__ <cell_group>
